@@ -277,32 +277,39 @@ input[type=range]{flex:1;accent-color:var(--teal)}
     </div>
 
     <!-- Upload cards -->
-    <div class="sec">העלאת כרטיסי אשראי</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
-      <div class="upload-zone" onclick="triggerUpload('erez')">
-        <div class="upload-icon">💳</div>
-        <div class="upload-text" style="color:var(--blue)">כרטיס ארז</div>
+    <div class="sec">העלאת קבצים</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
+      <div class="upload-zone" onclick="triggerUpload('erez','credit_card')" style="padding:1rem">
+        <div class="upload-icon" style="font-size:22px">💳</div>
+        <div class="upload-text" style="color:var(--blue);font-size:13px">כרטיס ארז</div>
         <div class="upload-sub">CSV / PDF</div>
       </div>
-      <div class="upload-zone" onclick="triggerUpload('hila')">
-        <div class="upload-icon">💳</div>
-        <div class="upload-text" style="color:var(--pink)">כרטיס הילה</div>
+      <div class="upload-zone" onclick="triggerUpload('hila','credit_card')" style="padding:1rem">
+        <div class="upload-icon" style="font-size:22px">💳</div>
+        <div class="upload-text" style="color:var(--pink);font-size:13px">כרטיס הילה</div>
+        <div class="upload-sub">CSV / PDF</div>
+      </div>
+      <div class="upload-zone" onclick="triggerUpload('joint','bank_account')" style="padding:1rem">
+        <div class="upload-icon" style="font-size:22px">🏦</div>
+        <div class="upload-text" style="color:var(--teal-d);font-size:13px">תנועות חשבון</div>
         <div class="upload-sub">CSV / PDF</div>
       </div>
     </div>
-    <input type="file" id="file-input-erez" accept=".csv,.pdf" style="display:none" onchange="handleUpload(this.files[0],'erez')">
-    <input type="file" id="file-input-hila" accept=".csv,.pdf" style="display:none" onchange="handleUpload(this.files[0],'hila')">
+    <input type="file" id="file-input-erez-credit_card" accept=".csv,.pdf" style="display:none" onchange="handleUpload(this.files[0],'erez','credit_card')">
+    <input type="file" id="file-input-hila-credit_card" accept=".csv,.pdf" style="display:none" onchange="handleUpload(this.files[0],'hila','credit_card')">
+    <input type="file" id="file-input-joint-bank_account" accept=".csv,.pdf" style="display:none" onchange="handleUpload(this.files[0],'joint','bank_account')">
 
     <div id="ai-status"></div>
 
-    <!-- Filter owner -->
+    <!-- Filter -->
     <div class="owner-tabs" id="owner-filter-tabs">
       <button class="owner-tab active-e" id="ot-all" onclick="setOwnerFilter('all')">הכל</button>
-      <button class="owner-tab" id="ot-erez" onclick="setOwnerFilter('erez')">ארז</button>
-      <button class="owner-tab" id="ot-hila" onclick="setOwnerFilter('hila')">הילה</button>
+      <button class="owner-tab" id="ot-erez" onclick="setOwnerFilter('erez')">כרטיס ארז</button>
+      <button class="owner-tab" id="ot-hila" onclick="setOwnerFilter('hila')">כרטיס הילה</button>
+      <button class="owner-tab" id="ot-joint" onclick="setOwnerFilter('joint')">חשבון</button>
     </div>
 
-    <div id="review-content"><div class="empty"><div class="empty-icon">🔍</div>העלה כרטיס אשראי לביקורת</div></div>
+    <div id="review-content"><div class="empty"><div class="empty-icon">🔍</div>העלה קובץ לביקורת</div></div>
   </div>
 
   <!-- CALENDAR -->
@@ -504,7 +511,7 @@ async function loadCats(){
 
 async function loadCardTxs(){
   const ms=reviewMonthStr();
-  const{data}=await sb.from('card_transactions').select('*').eq('upload_month',ms).order('transaction_date',{ascending:false});
+  const{data}=await sb.from('card_transactions').select('*').eq('upload_month',ms).order('transaction_date',{ascending:false}).order('source',{ascending:true});
   cardTxs=data||[];
   updatePendingBadge();
 }
@@ -659,19 +666,22 @@ function setOwnerFilter(f){
   document.getElementById('ot-all').className='owner-tab'+(f==='all'?' active-e':'');
   document.getElementById('ot-erez').className='owner-tab'+(f==='erez'?' active-e':'');
   document.getElementById('ot-hila').className='owner-tab'+(f==='hila'?' active-h':'');
+  const jEl=document.getElementById('ot-joint');
+  if(jEl)jEl.className='owner-tab'+(f==='joint'?' active-e':'');
   renderReview();
 }
 
-function triggerUpload(owner){document.getElementById('file-input-'+owner).click();}
+function triggerUpload(owner,source){document.getElementById('file-input-'+owner+'-'+source).click();}
 
-async function handleUpload(file,owner){
+async function handleUpload(file,owner,source){
   if(!file)return;
-  document.getElementById('ai-status').innerHTML=`<div class="ai-loading"><div class="spinner-sm"></div> מנתח את כרטיס ${owner==='erez'?'ארז':'הילה'} עם AI...</div>`;
+  const sourceLabel=source==='bank_account'?'תנועות חשבון':owner==='erez'?'כרטיס ארז':'כרטיס הילה';
+  document.getElementById('ai-status').innerHTML=`<div class="ai-loading"><div class="spinner-sm"></div> מנתח ${sourceLabel} עם AI...</div>`;
   try{
     let text='';
     const isPdf=file.name.toLowerCase().endsWith('.pdf');
     if(isPdf){text=await toBase64(file);}else{text=await file.text();}
-    await analyzeCard(text,isPdf,owner);
+    await analyzeCard(text,isPdf,owner,source);
   }catch(err){
     document.getElementById('ai-status').innerHTML=`<div style="color:var(--red);padding:12px;background:var(--red-l);border-radius:var(--r2)">שגיאה: ${err.message}</div>`;
   }
@@ -679,12 +689,13 @@ async function handleUpload(file,owner){
 
 function toBase64(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(file);});}
 
-async function analyzeCard(content,isPdf,owner){
+async function analyzeCard(content,isPdf,owner,source){
   const ms=reviewMonthStr();
   const expList=exps.map(e=>`- "${e.description}" קטגוריה: ${e.category||'כללי'}, סכום: ₪${e.amount}`).join('\n');
   const catList=cats.map(c=>c.name).join(', ');
 
-  const prompt=`אתה מנתח ${isPdf?'PDF':'CSV'} של כרטיס אשראי ישראלי (בנק מזרחי טפחות).
+  const isBankAccount=source==='bank_account';
+  const prompt=`אתה מנתח ${isPdf?'PDF':'CSV'} של ${isBankAccount?'תנועות חשבון עו"ש':'כרטיס אשראי'} ישראלי (בנק מזרחי טפחות).
 
 ${isPdf?'':'תוכן הקובץ:\n'+content}
 
@@ -715,10 +726,16 @@ ${expList}
 }
 
 כללים:
+${isBankAccount?`
+- approved: העברות נכנסות מארז/הילה, חיובי כרטיס אשראי חודשיים
+- manual: תשלומים ישירים לספקים שעשויים להיות הוצאות ילדים
+- rejected: עמלות בנק, ריביות, משכורות, העברות לא ידועות
+- עדכן את balance_after מהיתרה בסוף כל תנועה (אם קיים בקובץ)
+`:`
 - approved: ביטחון גבוה שזו הוצאת ילדים (>0.75)
-- manual: לא בטוח, צריך בדיקה אנושית (0.4-0.75)  
+- manual: לא בטוח, צריך בדיקה אנושית (0.4-0.75)
 - rejected: לא נראה כהוצאת ילדים (<0.4)
-- התעלם מעמלות בנק, ריביות, החזרות
+`}
 - החזר רק JSON ללא טקסט אחר`;
 
   const messages=isPdf?
@@ -767,7 +784,7 @@ function renderReview(){
   const ms=reviewMonthStr();
   document.getElementById('review-month-label').textContent=MN[reviewDate.getMonth()]+' '+reviewDate.getFullYear();
 
-  const filtered=ownerFilter==='all'?cardTxs:cardTxs.filter(t=>t.owner===ownerFilter);
+  const filtered=ownerFilter==='all'?cardTxs:cardTxs.filter(t=>ownerFilter==='joint'?t.source==='bank_account':t.owner===ownerFilter&&t.source==='credit_card');
 
   // Stats
   const pending=cardTxs.filter(t=>t.status==='pending').length;
@@ -813,7 +830,7 @@ function renderReview(){
 }
 
 function txCard(t){
-  const ownerBadge=t.owner==='erez'?'<span class="owner-badge-e">ארז</span>':'<span class="owner-badge-h">הילה</span>';
+  const ownerBadge=t.source==='bank_account'?'<span style="background:var(--teal-l);color:var(--teal-d);padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500">חשבון</span>':t.owner==='erez'?'<span class="owner-badge-e">ארז</span>':'<span class="owner-badge-h">הילה</span>';
   const statusMap={pending:'dot-pending',approved:'dot-approved',manual:'dot-manual',rejected:'dot-rejected'};
   const cardClass=t.status==='approved'?'approved':t.status==='manual'?'manual':t.status==='rejected'?'rejected':'';
   const conf=Math.round((t.ai_confidence||0)*100);
