@@ -6,244 +6,156 @@
 <title>כספים משותפים</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  :root {
-    --teal: #1D9E75;
-    --teal-light: #E1F5EE;
-    --teal-dark: #0F6E56;
-    --blue: #185FA5;
-    --blue-light: #E6F1FB;
-    --pink: #993556;
-    --pink-light: #FBEAF0;
-    --amber: #854F0B;
-    --amber-light: #FAEEDA;
-    --gray: #5F5E5A;
-    --gray-light: #F1EFE8;
-    --red: #A32D2D;
-    --red-light: #FCEBEB;
-    --text: #2C2C2A;
-    --text-secondary: #888780;
-    --border: rgba(0,0,0,0.12);
-    --bg: #ffffff;
-    --bg-secondary: #F8F7F4;
-    --radius: 12px;
-    --radius-sm: 8px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; background: var(--bg-secondary); color: var(--text); min-height: 100vh; }
+:root {
+  --teal: #1D9E75; --teal-light: #E1F5EE; --teal-dark: #0F6E56;
+  --blue: #185FA5; --blue-light: #E6F1FB;
+  --pink: #993556; --pink-light: #FBEAF0;
+  --amber: #854F0B; --amber-light: #FAEEDA;
+  --red: #A32D2D; --red-light: #FCEBEB;
+  --gray: #5F5E5A; --gray-light: #F1EFE8;
+  --text: #2C2C2A; --text2: #888780;
+  --border: rgba(0,0,0,0.12);
+  --bg: #ffffff; --bg2: #F8F7F4;
+  --r: 12px; --r2: 8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:var(--bg2);color:var(--text);min-height:100vh}
 
-  /* AUTH SCREEN */
-  #auth-screen {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    min-height: 100vh; padding: 2rem;
-  }
-  .auth-logo { font-size: 48px; margin-bottom: 1rem; }
-  .auth-title { font-size: 24px; font-weight: 600; margin-bottom: 0.5rem; }
-  .auth-sub { font-size: 15px; color: var(--text-secondary); margin-bottom: 2.5rem; text-align: center; }
-  .btn-google {
-    display: flex; align-items: center; gap: 12px;
-    background: white; border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 14px 24px;
-    font-size: 16px; font-weight: 500; cursor: pointer;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-    width: 100%; max-width: 320px; justify-content: center;
-    transition: box-shadow .2s;
-  }
-  .btn-google:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-  .google-icon { width: 20px; height: 20px; }
-  .auth-note { font-size: 13px; color: var(--text-secondary); margin-top: 1.5rem; text-align: center; }
+/* AUTH */
+#auth-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:2rem}
+.auth-logo{font-size:52px;margin-bottom:1rem}
+.auth-title{font-size:24px;font-weight:600;margin-bottom:.5rem}
+.auth-sub{font-size:15px;color:var(--text2);margin-bottom:2.5rem;text-align:center;line-height:1.6}
+.btn-google{display:flex;align-items:center;gap:12px;background:white;border:1px solid var(--border);border-radius:var(--r);padding:14px 24px;font-size:16px;font-weight:500;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.08);width:100%;max-width:320px;justify-content:center;transition:box-shadow .2s}
+.btn-google:hover{box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.auth-note{font-size:13px;color:var(--text2);margin-top:1.5rem;text-align:center}
 
-  /* APP */
-  #app-screen { display: none; max-width: 480px; margin: 0 auto; padding-bottom: 80px; }
+/* APP */
+#app-screen{display:none;max-width:480px;margin:0 auto;padding-bottom:90px}
 
-  /* HEADER */
-  .header {
-    background: var(--teal); color: white; padding: 1rem 1.25rem 1.5rem;
-    position: sticky; top: 0; z-index: 10;
-  }
-  .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
-  .header-title { font-size: 17px; font-weight: 600; }
-  .user-badge {
-    background: rgba(255,255,255,0.2); border-radius: 20px;
-    padding: 4px 12px; font-size: 13px; display: flex; align-items: center; gap: 6px;
-  }
-  .logout-btn { background: none; border: none; color: rgba(255,255,255,0.8); font-size: 13px; cursor: pointer; }
-  .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .summary-card {
-    background: rgba(255,255,255,0.15); border-radius: var(--radius-sm);
-    padding: 12px; text-align: center;
-  }
-  .summary-label { font-size: 11px; opacity: .8; margin-bottom: 4px; }
-  .summary-val { font-size: 20px; font-weight: 600; }
-  .summary-sub { font-size: 11px; opacity: .7; margin-top: 2px; }
+/* HEADER */
+.header{background:var(--teal);color:white;padding:1rem 1.25rem 1.25rem;position:sticky;top:0;z-index:10}
+.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.header-title{font-size:17px;font-weight:600}
+.user-info{display:flex;align-items:center;gap:8px}
+.user-name{background:rgba(255,255,255,.2);border-radius:20px;padding:4px 12px;font-size:13px}
+.logout-btn{background:none;border:none;color:rgba(255,255,255,.75);font-size:13px;cursor:pointer;padding:4px}
 
-  /* SPLIT CARDS */
-  .split-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 1rem 1rem 0; }
-  .split-card {
-    background: white; border-radius: var(--radius); border: 0.5px solid var(--border);
-    padding: 14px; text-align: center;
-  }
-  .split-avatar {
-    width: 36px; height: 36px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px; font-weight: 600; margin: 0 auto 8px;
-  }
-  .split-name { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
-  .split-amount { font-size: 18px; font-weight: 600; }
-  .split-pct { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+/* TRANSFER CARD */
+.transfer-next{background:white;border-radius:var(--r);margin:1rem;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.transfer-header{background:var(--teal-dark);color:white;border-radius:var(--r) var(--r) 0 0;padding:12px 16px;font-size:14px;font-weight:500;display:flex;justify-content:space-between;align-items:center}
+.transfer-body{padding:14px 16px}
+.transfer-row-big{display:flex;justify-content:space-between;align-items:center;padding:8px 0}
+.transfer-row-big:not(:last-child){border-bottom:.5px solid var(--border)}
+.person-label{display:flex;align-items:center;gap:10px}
+.avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600}
+.avatar-e{background:var(--blue-light);color:var(--blue)}
+.avatar-h{background:var(--pink-light);color:var(--pink)}
+.person-name{font-size:15px;font-weight:500}
+.transfer-amount-e{font-size:20px;font-weight:700;color:var(--blue)}
+.transfer-amount-h{font-size:20px;font-weight:700;color:var(--pink)}
+.transfer-breakdown{padding:10px 16px 14px;border-top:.5px solid var(--border);background:var(--bg2);border-radius:0 0 var(--r) var(--r)}
+.breakdown-row{display:flex;justify-content:space-between;font-size:13px;color:var(--text2);padding:2px 0}
+.breakdown-row.negative{color:var(--red)}
 
-  /* TABS */
-  .tabs { display: flex; background: white; border-bottom: 0.5px solid var(--border); margin-top: 1rem; position: sticky; top: 120px; z-index: 9; }
-  .tab { flex: 1; padding: 12px 0; text-align: center; font-size: 14px; color: var(--text-secondary); cursor: pointer; border-bottom: 2px solid transparent; transition: all .2s; }
-  .tab.active { color: var(--teal); border-bottom-color: var(--teal); font-weight: 500; }
+/* BALANCE UPDATE */
+.balance-row{display:flex;gap:8px;padding:0 1rem 1rem}
+.balance-input-wrap{flex:1;position:relative}
+.balance-input-wrap input{width:100%;padding:10px 40px 10px 12px;border:.5px solid var(--border);border-radius:var(--r2);font-size:15px;background:white;color:var(--text)}
+.balance-input-wrap .currency{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text2);font-size:15px}
+.btn-update-balance{padding:10px 16px;background:var(--teal);color:white;border:none;border-radius:var(--r2);font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap}
 
-  /* CONTENT */
-  .pane { display: none; padding: 1rem; }
-  .pane.active { display: block; }
+/* SUMMARY PILLS */
+.summary-pills{display:flex;gap:8px;padding:0 1rem .5rem;overflow-x:auto;scrollbar-width:none}
+.summary-pills::-webkit-scrollbar{display:none}
+.pill-card{background:rgba(255,255,255,.15);border-radius:20px;padding:6px 14px;white-space:nowrap;text-align:center;color:white}
+.pill-label{font-size:11px;opacity:.8}
+.pill-val{font-size:14px;font-weight:600}
 
-  /* SECTION */
-  .section-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .6px; margin: 1rem 0 8px; }
+/* TABS */
+.tabs{display:flex;background:white;border-bottom:.5px solid var(--border);position:sticky;top:0;z-index:9}
+.tab{flex:1;padding:12px 0;text-align:center;font-size:14px;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
+.tab.active{color:var(--teal);border-bottom-color:var(--teal);font-weight:500}
 
-  /* EXPENSE CARD */
-  .expense-card {
-    background: white; border-radius: var(--radius); border: 0.5px solid var(--border);
-    padding: 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
-  }
-  .expense-card.inactive { opacity: .5; }
-  .exp-name { font-size: 15px; font-weight: 500; margin-bottom: 3px; }
-  .exp-meta { font-size: 12px; color: var(--text-secondary); }
-  .exp-right { text-align: left; flex-shrink: 0; }
-  .exp-amount { font-size: 15px; font-weight: 600; }
-  .exp-split { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
-  .pill {
-    display: inline-block; padding: 2px 8px; border-radius: 20px;
-    font-size: 11px; margin-right: 4px;
-  }
-  .pill-fixed { background: var(--teal-light); color: var(--teal-dark); }
-  .pill-one { background: var(--amber-light); color: var(--amber); }
-  .pill-inactive { background: var(--gray-light); color: var(--gray); }
+/* PANES */
+.pane{display:none;padding:1rem}
+.pane.active{display:block}
+.section-label{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.6px;margin:1rem 0 8px}
+.section-label:first-child{margin-top:0}
 
-  /* FAB */
-  .fab {
-    position: fixed; bottom: 24px; left: 24px;
-    width: 56px; height: 56px; border-radius: 50%;
-    background: var(--teal); color: white; border: none;
-    font-size: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 12px rgba(29,158,117,0.4); z-index: 50;
-    transition: transform .15s;
-  }
-  .fab:active { transform: scale(0.93); }
+/* EXPENSE CARD */
+.expense-card{background:white;border-radius:var(--r);border:.5px solid var(--border);padding:14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.exp-name{font-size:15px;font-weight:500;margin-bottom:3px}
+.exp-meta{font-size:12px;color:var(--text2)}
+.exp-right{text-align:left;flex-shrink:0}
+.exp-amount{font-size:15px;font-weight:600}
+.exp-split{font-size:11px;color:var(--text2);margin-top:2px}
+.pill-tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;margin-right:4px}
+.pill-fixed{background:var(--teal-light);color:var(--teal-dark)}
+.pill-one{background:var(--amber-light);color:var(--amber)}
+.delete-btn{background:none;border:none;color:var(--text2);font-size:16px;cursor:pointer;padding:4px;margin-top:4px;display:block}
+.delete-btn:hover{color:var(--red)}
 
-  /* MODAL */
-  .modal-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.45); z-index: 100;
-    align-items: flex-end; justify-content: center;
-  }
-  .modal-overlay.open { display: flex; }
-  .modal {
-    background: white; border-radius: var(--radius) var(--radius) 0 0;
-    padding: 1.5rem; width: 100%; max-width: 480px;
-    max-height: 92vh; overflow-y: auto;
-  }
-  .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
-  .modal-title { font-size: 18px; font-weight: 600; }
-  .modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: var(--text-secondary); line-height: 1; }
-  .form-label { font-size: 13px; color: var(--text-secondary); margin-bottom: 5px; display: block; }
-  .form-group { margin-bottom: 14px; }
-  input[type=text], input[type=number], input[type=date], input[type=month], select, textarea {
-    width: 100%; padding: 10px 12px; border: 0.5px solid var(--border);
-    border-radius: var(--radius-sm); font-size: 15px; color: var(--text);
-    background: white; outline: none; transition: border-color .2s;
-    font-family: inherit;
-  }
-  input:focus, select:focus { border-color: var(--teal); }
-  .toggle-group { display: flex; gap: 8px; }
-  .toggle-btn {
-    flex: 1; padding: 10px; border: 0.5px solid var(--border);
-    border-radius: var(--radius-sm); background: white; color: var(--text-secondary);
-    font-size: 14px; cursor: pointer; transition: all .15s; font-family: inherit;
-  }
-  .toggle-btn.active { background: var(--teal); color: white; border-color: var(--teal); font-weight: 500; }
-  .btn-submit {
-    width: 100%; padding: 14px; background: var(--teal); color: white;
-    border: none; border-radius: var(--radius); font-size: 16px; font-weight: 500;
-    cursor: pointer; margin-top: 8px; font-family: inherit;
-  }
-  .btn-cancel {
-    width: 100%; padding: 12px; background: none; color: var(--text-secondary);
-    border: 0.5px solid var(--border); border-radius: var(--radius); font-size: 15px;
-    cursor: pointer; margin-top: 8px; font-family: inherit;
-  }
+/* FAB */
+.fab{position:fixed;bottom:24px;left:24px;width:56px;height:56px;border-radius:50%;background:var(--teal);color:white;border:none;font-size:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(29,158,117,.4);z-index:50;transition:transform .15s}
+.fab:active{transform:scale(.93)}
 
-  /* HISTORY */
-  .transfer-card {
-    background: white; border-radius: var(--radius); border: 0.5px solid var(--border);
-    padding: 14px; margin-bottom: 8px;
-  }
-  .transfer-month { font-size: 15px; font-weight: 500; margin-bottom: 8px; }
-  .transfer-row { display: flex; justify-content: space-between; font-size: 14px; padding: 3px 0; }
-  .transfer-erez { color: var(--blue); font-weight: 500; }
-  .transfer-hila { color: var(--pink); font-weight: 500; }
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:white;border-radius:var(--r) var(--r) 0 0;padding:1.5rem;width:100%;max-width:480px;max-height:92vh;overflow-y:auto}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}
+.modal-title{font-size:18px;font-weight:600}
+.modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--text2);line-height:1}
+.form-label{font-size:13px;color:var(--text2);margin-bottom:5px;display:block}
+.form-group{margin-bottom:14px}
+input[type=text],input[type=number],input[type=date],input[type=month],select{width:100%;padding:10px 12px;border:.5px solid var(--border);border-radius:var(--r2);font-size:15px;color:var(--text);background:white;outline:none;transition:border-color .2s;font-family:inherit}
+input:focus,select:focus{border-color:var(--teal)}
+.toggle-group{display:flex;gap:8px}
+.toggle-btn{flex:1;padding:10px;border:.5px solid var(--border);border-radius:var(--r2);background:white;color:var(--text2);font-size:14px;cursor:pointer;transition:all .15s;font-family:inherit}
+.toggle-btn.active{background:var(--teal);color:white;border-color:var(--teal);font-weight:500}
+.btn-submit{width:100%;padding:14px;background:var(--teal);color:white;border:none;border-radius:var(--r);font-size:16px;font-weight:500;cursor:pointer;margin-top:8px;font-family:inherit}
+.btn-cancel{width:100%;padding:12px;background:none;color:var(--text2);border:.5px solid var(--border);border-radius:var(--r);font-size:15px;cursor:pointer;margin-top:8px;font-family:inherit}
 
-  /* SETTINGS */
-  .settings-card {
-    background: white; border-radius: var(--radius); border: 0.5px solid var(--border);
-    padding: 14px; margin-bottom: 12px;
-  }
-  .settings-title { font-size: 15px; font-weight: 500; margin-bottom: 12px; }
-  .slider-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-  .slider-label { font-size: 14px; min-width: 40px; }
-  input[type=range] { flex: 1; accent-color: var(--teal); }
-  .slider-val { font-size: 14px; font-weight: 500; min-width: 36px; text-align: left; }
-  .btn-save {
-    width: 100%; padding: 12px; background: var(--teal); color: white;
-    border: none; border-radius: var(--radius); font-size: 15px; font-weight: 500;
-    cursor: pointer; font-family: inherit;
-  }
+/* HISTORY */
+.history-card{background:white;border-radius:var(--r);border:.5px solid var(--border);padding:14px;margin-bottom:8px}
+.history-month{font-size:15px;font-weight:500;margin-bottom:10px;color:var(--text)}
+.history-row{display:flex;justify-content:space-between;font-size:14px;padding:3px 0}
 
-  /* EMPTY STATE */
-  .empty { text-align: center; padding: 3rem 1rem; color: var(--text-secondary); font-size: 15px; }
-  .empty-icon { font-size: 40px; margin-bottom: 1rem; }
+/* SETTINGS */
+.settings-card{background:white;border-radius:var(--r);border:.5px solid var(--border);padding:14px;margin-bottom:12px}
+.settings-title{font-size:15px;font-weight:500;margin-bottom:12px}
+.slider-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.slider-label{font-size:14px;min-width:40px}
+input[type=range]{flex:1;accent-color:var(--teal)}
+.slider-val{font-size:14px;font-weight:500;min-width:36px;text-align:left}
+.btn-save{width:100%;padding:12px;background:var(--teal);color:white;border:none;border-radius:var(--r);font-size:15px;font-weight:500;cursor:pointer;font-family:inherit}
 
-  /* TOAST */
-  .toast {
-    position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
-    background: #2C2C2A; color: white; padding: 10px 20px;
-    border-radius: 20px; font-size: 14px; z-index: 200;
-    opacity: 0; transition: opacity .3s; white-space: nowrap;
-  }
-  .toast.show { opacity: 1; }
+/* EMPTY */
+.empty{text-align:center;padding:3rem 1rem;color:var(--text2);font-size:15px}
+.empty-icon{font-size:40px;margin-bottom:1rem}
 
-  /* LOADING */
-  .loading { text-align: center; padding: 3rem; color: var(--text-secondary); }
-  .spinner {
-    width: 32px; height: 32px; border: 3px solid var(--border);
-    border-top-color: var(--teal); border-radius: 50%;
-    animation: spin .8s linear infinite; margin: 0 auto 1rem;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
+/* TOAST */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#2C2C2A;color:white;padding:10px 20px;border-radius:20px;font-size:14px;z-index:200;opacity:0;transition:opacity .3s;white-space:nowrap;pointer-events:none}
+.toast.show{opacity:1}
 
-  .delete-btn {
-    background: none; border: none; color: var(--red-light);
-    font-size: 18px; cursor: pointer; padding: 2px 6px; border-radius: 6px;
-    transition: background .15s;
-  }
-  .delete-btn:hover { background: var(--red-light); color: var(--red); }
+/* LOADING */
+.loading{text-align:center;padding:3rem;color:var(--text2)}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-  .month-nav { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 1rem; }
-  .month-nav-btn { background: none; border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 6px 14px; cursor: pointer; font-size: 14px; }
-  .month-nav-title { font-size: 15px; font-weight: 500; min-width: 120px; text-align: center; }
+.negative-badge{background:var(--red-light);color:var(--red);border-radius:20px;padding:2px 10px;font-size:12px;font-weight:500}
 </style>
 </head>
 <body>
 
 <!-- AUTH -->
 <div id="auth-screen">
-  <div class="auth-logo">💰</div>
+  <div class="auth-logo">👨‍👧‍👦</div>
   <div class="auth-title">כספים משותפים</div>
-  <div class="auth-sub">ניהול הוצאות משותפות<br>לארז ולהילה</div>
+  <div class="auth-sub">ניהול הוצאות ילדים<br>ארז ❤️ הילה</div>
   <button class="btn-google" onclick="loginWithGoogle()">
-    <svg class="google-icon" viewBox="0 0 24 24">
+    <svg width="20" height="20" viewBox="0 0 24 24">
       <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
       <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
       <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
@@ -251,95 +163,110 @@
     </svg>
     כניסה עם Google
   </button>
-  <div class="auth-note">הגישה מוגבלת לארז ולהילה בלבד</div>
+  <div class="auth-note">גישה מוגבלת לארז ולהילה בלבד</div>
 </div>
 
 <!-- APP -->
 <div id="app-screen">
+
+  <!-- HEADER -->
   <div class="header">
     <div class="header-top">
-      <div class="header-title">💰 כספים משותפים</div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <div class="user-badge" id="user-badge">...</div>
+      <div class="header-title">👨‍👧‍👦 כספים משותפים</div>
+      <div class="user-info">
+        <div class="user-name" id="user-name">...</div>
         <button class="logout-btn" onclick="logout()">יציאה</button>
       </div>
     </div>
-    <div class="summary-grid">
-      <div class="summary-card">
-        <div class="summary-label">להעביר החודש</div>
-        <div class="summary-val" id="hdr-monthly">₪0</div>
-        <div class="summary-sub" id="hdr-month-name"></div>
+    <div class="summary-pills">
+      <div class="pill-card">
+        <div class="pill-label">הוצאות החודש</div>
+        <div class="pill-val" id="hdr-total">₪0</div>
       </div>
-      <div class="summary-card">
-        <div class="summary-label">יתרה בחשבון</div>
-        <div class="summary-val" id="hdr-balance">₪0</div>
-        <div class="summary-sub" id="hdr-billing">חיוב: יום <span id="hdr-billing-day">10</span></div>
+      <div class="pill-card">
+        <div class="pill-label">יתרה בחשבון</div>
+        <div class="pill-val" id="hdr-balance">₪0</div>
+      </div>
+      <div class="pill-card">
+        <div class="pill-label">חיוב אשראי</div>
+        <div class="pill-val" id="hdr-billing">יום 10</div>
       </div>
     </div>
   </div>
 
-  <div class="split-row">
-    <div class="split-card">
-      <div class="split-avatar" style="background:var(--blue-light);color:var(--blue)">ארז</div>
-      <div class="split-name">ארז</div>
-      <div class="split-amount transfer-erez" id="split-erez">₪0</div>
-      <div class="split-pct" id="split-erez-pct">60%</div>
+  <!-- NEXT TRANSFER CARD -->
+  <div class="transfer-next">
+    <div class="transfer-header">
+      <span>💸 להעברה הבאה — <span id="next-month-label"></span></span>
+      <span id="balance-badge"></span>
     </div>
-    <div class="split-card">
-      <div class="split-avatar" style="background:var(--pink-light);color:var(--pink)">הילה</div>
-      <div class="split-name">הילה</div>
-      <div class="split-amount transfer-hila" id="split-hila">₪0</div>
-      <div class="split-pct" id="split-hila-pct">40%</div>
+    <div class="transfer-body">
+      <div class="transfer-row-big">
+        <div class="person-label">
+          <div class="avatar avatar-e">ארז</div>
+          <div class="person-name">ארז מעביר</div>
+        </div>
+        <div class="transfer-amount-e" id="erez-transfer">₪0</div>
+      </div>
+      <div class="transfer-row-big">
+        <div class="person-label">
+          <div class="avatar avatar-h">הילה</div>
+          <div class="person-name">הילה מעבירה</div>
+        </div>
+        <div class="transfer-amount-h" id="hila-transfer">₪0</div>
+      </div>
     </div>
+    <div class="transfer-breakdown" id="transfer-breakdown"></div>
   </div>
 
+  <!-- BALANCE UPDATE -->
+  <div class="balance-row">
+    <div class="balance-input-wrap">
+      <input type="number" id="balance-input" placeholder="יתרה נוכחית">
+      <span class="currency">₪</span>
+    </div>
+    <button class="btn-update-balance" onclick="updateBalance()">עדכן יתרה</button>
+  </div>
+
+  <!-- TABS -->
   <div class="tabs">
     <div class="tab active" onclick="switchTab('expenses')">הוצאות</div>
     <div class="tab" onclick="switchTab('history')">היסטוריה</div>
     <div class="tab" onclick="switchTab('settings')">הגדרות</div>
   </div>
 
-  <!-- EXPENSES TAB -->
+  <!-- EXPENSES -->
   <div id="pane-expenses" class="pane active">
     <div id="expenses-content"><div class="loading"><div class="spinner"></div>טוען...</div></div>
   </div>
 
-  <!-- HISTORY TAB -->
+  <!-- HISTORY -->
   <div id="pane-history" class="pane">
-    <div class="month-nav">
-      <button class="month-nav-btn" onclick="changeHistoryMonth(-1)">&#8250;</button>
-      <div class="month-nav-title" id="history-month-label"></div>
-      <button class="month-nav-btn" onclick="changeHistoryMonth(1)">&#8249;</button>
-    </div>
     <div id="history-content"><div class="loading"><div class="spinner"></div>טוען...</div></div>
-    <button class="btn-submit" style="margin-top:1rem" onclick="openTransferModal()">רשום העברה חודשית</button>
+    <button class="btn-submit" style="margin-top:.5rem" onclick="openTransferModal()">+ רשום העברה שבוצעה</button>
   </div>
 
-  <!-- SETTINGS TAB -->
+  <!-- SETTINGS -->
   <div id="pane-settings" class="pane">
     <div class="section-label">חלוקת הוצאות</div>
     <div class="settings-card">
       <div class="settings-title">אחוז השתתפות</div>
       <div class="slider-row">
         <span class="slider-label">ארז</span>
-        <input type="range" min="0" max="100" step="1" id="settings-erez-pct" oninput="onSliderChange(this.value)">
-        <span class="slider-val" id="settings-erez-val">60%</span>
+        <input type="range" min="0" max="100" step="1" id="s-erez-pct" oninput="onSlider(this.value)">
+        <span class="slider-val" id="s-erez-val">60%</span>
       </div>
       <div class="slider-row">
         <span class="slider-label">הילה</span>
-        <span style="flex:1;font-size:14px;color:var(--text-secondary)">משלים ל-100%</span>
-        <span class="slider-val" id="settings-hila-val">40%</span>
+        <span style="flex:1;font-size:13px;color:var(--text2)">משלים ל-100%</span>
+        <span class="slider-val" id="s-hila-val">40%</span>
       </div>
     </div>
-    <div class="section-label">חשבון</div>
+    <div class="section-label">כרטיס אשראי</div>
     <div class="settings-card">
-      <div class="form-group">
-        <label class="form-label">יתרה נוכחית בחשבון (₪)</label>
-        <input type="number" id="settings-balance" placeholder="0">
-      </div>
       <div class="form-group" style="margin-bottom:0">
-        <label class="form-label">יום חיוב אשראי</label>
-        <input type="number" id="settings-billing" min="1" max="31" placeholder="10">
+        <label class="form-label">יום חיוב בחודש</label>
+        <input type="number" id="s-billing" min="1" max="31" placeholder="10">
       </div>
     </div>
     <button class="btn-save" onclick="saveSettings()">שמור הגדרות</button>
@@ -350,7 +277,7 @@
 <div class="modal-overlay" id="expense-modal">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title" id="modal-title-text">הוצאה חדשה</div>
+      <div class="modal-title">הוצאה חדשה לילדים</div>
       <button class="modal-close" onclick="closeModal('expense-modal')">✕</button>
     </div>
     <div class="form-group">
@@ -358,17 +285,16 @@
       <input type="text" id="f-desc" placeholder="למשל: ביטוח רפואי ילדים">
     </div>
     <div class="form-group">
-      <label class="form-label">סכום חודשי (₪)</label>
+      <label class="form-label">סכום (₪)</label>
       <input type="number" id="f-amount" placeholder="0">
     </div>
     <div class="form-group">
       <label class="form-label">סוג הוצאה</label>
       <div class="toggle-group">
-        <button class="toggle-btn active" id="type-fixed" onclick="selectType('fixed')">קבועה</button>
+        <button class="toggle-btn active" id="type-fixed" onclick="selectType('fixed')">קבועה חודשית</button>
         <button class="toggle-btn" id="type-one" onclick="selectType('one-time')">חד-פעמית</button>
       </div>
     </div>
-
     <div id="fixed-fields">
       <div class="form-group">
         <label class="form-label">חודש התחלה</label>
@@ -385,21 +311,11 @@
         </div>
       </div>
     </div>
-
     <div id="onetime-fields" style="display:none">
       <div class="form-group">
-        <label class="form-label">תאריך הוצאה</label>
+        <label class="form-label">תאריך</label>
         <input type="date" id="f-expense-date">
       </div>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">מי שילם</label>
-      <select id="f-paid-by">
-        <option value="joint">חשבון משותף</option>
-        <option value="erez">ארז שילם</option>
-        <option value="hila">הילה שילמה</option>
-      </select>
     </div>
     <button class="btn-submit" onclick="submitExpense()">הוסף הוצאה</button>
     <button class="btn-cancel" onclick="closeModal('expense-modal')">ביטול</button>
@@ -410,7 +326,7 @@
 <div class="modal-overlay" id="transfer-modal">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">רישום העברה חודשית</div>
+      <div class="modal-title">רישום העברה</div>
       <button class="modal-close" onclick="closeModal('transfer-modal')">✕</button>
     </div>
     <div class="form-group">
@@ -418,18 +334,18 @@
       <input type="month" id="t-month">
     </div>
     <div class="form-group">
-      <label class="form-label">סכום ארז (₪)</label>
+      <label class="form-label">ארז העביר (₪)</label>
       <input type="number" id="t-erez">
     </div>
     <div class="form-group">
-      <label class="form-label">סכום הילה (₪)</label>
+      <label class="form-label">הילה העבירה (₪)</label>
       <input type="number" id="t-hila">
     </div>
     <div class="form-group">
-      <label class="form-label">הערות (אופציונלי)</label>
-      <input type="text" id="t-notes" placeholder="">
+      <label class="form-label">הערות</label>
+      <input type="text" id="t-notes" placeholder="אופציונלי">
     </div>
-    <button class="btn-submit" onclick="submitTransfer()">שמור העברה</button>
+    <button class="btn-submit" onclick="submitTransfer()">שמור</button>
     <button class="btn-cancel" onclick="closeModal('transfer-modal')">ביטול</button>
   </div>
 </div>
@@ -440,14 +356,11 @@
 <script>
 const SUPABASE_URL = 'https://bmsmwluahzkkwiiumbki.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJtc213bHVhaHpra3dpaXVtYmtpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1MDg0NjEsImV4cCI6MjA5NzA4NDQ2MX0.oXjCZR0PVUt-rp0OvsyefrpQVE09ULANojwFjcXlhI4';
-const ALLOWED_EMAILS = ['erezmi77@gmail.com', 'hilla_shallem@yahoo.com'];
+const ALLOWED = ['erezmi77@gmail.com', 'hilla_shallem@yahoo.com'];
+const MONTH_NAMES = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-  auth: {
-    detectSessionInUrl: true,
-    persistSession: true,
-    autoRefreshToken: true
-  }
+  auth: { detectSessionInUrl: true, persistSession: true, autoRefreshToken: true }
 });
 
 let currentUser = null;
@@ -455,11 +368,8 @@ let settings = { erez_pct: 60, hila_pct: 40, balance: 0, billing_day: 10 };
 let expenses = [];
 let expenseType = 'fixed';
 let endType = 'none';
-let currentTab = 'expenses';
-let historyMonth = new Date();
-historyMonth.setDate(1);
 
-// ---- HANDLE AUTH REDIRECT ----
+// ---- AUTH ----
 async function handleAuthRedirect() {
   const hash = window.location.hash;
   if (hash && hash.includes('access_token')) {
@@ -467,24 +377,20 @@ async function handleAuthRedirect() {
     const access_token = params.get('access_token');
     const refresh_token = params.get('refresh_token');
     if (access_token) {
-      const { error } = await sb.auth.setSession({ access_token, refresh_token });
-      if (!error) {
-        window.history.replaceState(null, '', window.location.pathname);
-      }
+      await sb.auth.setSession({ access_token, refresh_token });
+      window.history.replaceState(null, '', window.location.pathname);
     }
   }
 }
 
-// ---- AUTH ----
 async function loginWithGoogle() {
-  const { error } = await sb.auth.signInWithOAuth({
+  await sb.auth.signInWithOAuth({
     provider: 'google',
     options: {
       redirectTo: 'https://erezmichaeli77.github.io/family-finance',
       queryParams: { prompt: 'select_account' }
     }
   });
-  if (error) showToast('שגיאה בכניסה');
 }
 
 async function logout() {
@@ -493,43 +399,44 @@ async function logout() {
 }
 
 handleAuthRedirect().then(() => {
-sb.auth.onAuthStateChange(async (event, session) => {
-  if (session?.user) {
-    const email = session.user.email;
-    if (!ALLOWED_EMAILS.includes(email)) {
-      await sb.auth.signOut();
-      document.getElementById('auth-screen').innerHTML = '<div style="text-align:center;padding:3rem"><div style="font-size:48px;margin-bottom:1rem">🚫</div><div style="font-size:18px;font-weight:600;margin-bottom:0.5rem">אין גישה</div><div style="color:#888">האימייל הזה אינו מורשה</div></div>';
-      return;
+  sb.auth.onAuthStateChange(async (event, session) => {
+    if (session?.user) {
+      const email = session.user.email;
+      if (!ALLOWED.includes(email)) {
+        await sb.auth.signOut();
+        document.getElementById('auth-screen').innerHTML =
+          '<div style="text-align:center;padding:3rem"><div style="font-size:48px;margin-bottom:1rem">🚫</div><div style="font-size:18px;font-weight:600">אין גישה</div><div style="color:#888;margin-top:.5rem">האימייל הזה אינו מורשה</div></div>';
+        return;
+      }
+      currentUser = session.user;
+      const name = email === 'erezmi77@gmail.com' ? 'ארז' : 'הילה';
+      document.getElementById('user-name').textContent = name;
+      document.getElementById('auth-screen').style.display = 'none';
+      document.getElementById('app-screen').style.display = 'block';
+      await loadAll();
+    } else {
+      document.getElementById('auth-screen').style.display = 'flex';
+      document.getElementById('app-screen').style.display = 'none';
     }
-    currentUser = session.user;
-    const name = email === 'erezmi77@gmail.com' ? 'ארז' : 'הילה';
-    document.getElementById('user-badge').textContent = name;
-    document.getElementById('auth-screen').style.display = 'none';
-    document.getElementById('app-screen').style.display = 'block';
-    await loadAll();
-  } else {
-    document.getElementById('auth-screen').style.display = 'flex';
-    document.getElementById('app-screen').style.display = 'none';
-  }
+  });
 });
 
 // ---- LOAD ----
 async function loadAll() {
   await loadSettings();
   await loadExpenses();
-  renderExpenses();
-  updateHeader();
+  render();
 }
 
 async function loadSettings() {
   const { data } = await sb.from('settings').select('*').eq('id', 1).single();
   if (data) {
     settings = data;
-    document.getElementById('settings-erez-pct').value = settings.erez_pct;
-    document.getElementById('settings-erez-val').textContent = settings.erez_pct + '%';
-    document.getElementById('settings-hila-val').textContent = settings.hila_pct + '%';
-    document.getElementById('settings-balance').value = settings.balance;
-    document.getElementById('settings-billing').value = settings.billing_day;
+    document.getElementById('s-erez-pct').value = settings.erez_pct;
+    document.getElementById('s-erez-val').textContent = settings.erez_pct + '%';
+    document.getElementById('s-hila-val').textContent = settings.hila_pct + '%';
+    document.getElementById('s-billing').value = settings.billing_day;
+    document.getElementById('balance-input').value = settings.balance || '';
   }
 }
 
@@ -538,113 +445,172 @@ async function loadExpenses() {
   expenses = data || [];
 }
 
-// ---- RENDER ----
-function updateHeader() {
-  const now = new Date();
-  const monthNames = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
-  const monthStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
-
-  const fixedTotal = expenses.filter(e => e.type === 'fixed' && isExpenseActiveThisMonth(e, monthStr)).reduce((s,e) => s + Number(e.amount), 0);
-  const oneTimeTotal = expenses.filter(e => e.type === 'one-time' && e.expense_date && e.expense_date.startsWith(monthStr)).reduce((s,e) => s + Number(e.amount), 0);
-  const total = fixedTotal + oneTimeTotal;
-
-  document.getElementById('hdr-monthly').textContent = '₪' + total.toLocaleString();
-  document.getElementById('hdr-month-name').textContent = monthNames[now.getMonth()] + ' ' + now.getFullYear();
-  document.getElementById('hdr-balance').textContent = '₪' + Number(settings.balance).toLocaleString();
-  document.getElementById('hdr-billing-day').textContent = settings.billing_day;
-
-  const erezAmt = Math.round(total * settings.erez_pct / 100);
-  const hilaAmt = Math.round(total * settings.hila_pct / 100);
-  document.getElementById('split-erez').textContent = '₪' + erezAmt.toLocaleString();
-  document.getElementById('split-hila').textContent = '₪' + hilaAmt.toLocaleString();
-  document.getElementById('split-erez-pct').textContent = settings.erez_pct + '%';
-  document.getElementById('split-hila-pct').textContent = settings.hila_pct + '%';
+// ---- COMPUTE ----
+function getCurrentMonthStr() {
+  const n = new Date();
+  return n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0');
 }
 
-function isExpenseActiveThisMonth(e, monthStr) {
-  if (e.start_month && e.start_month > monthStr + '-31') return false;
-  if (e.end_type === 'date' && e.end_month && e.end_month < monthStr) return false;
+function isActiveThisMonth(e, monthStr) {
+  if (e.type === 'fixed') {
+    if (e.start_month) {
+      const sm = e.start_month.substring(0,7);
+      if (sm > monthStr) return false;
+    }
+    if (e.end_type === 'date' && e.end_month && e.end_month < monthStr) return false;
+  } else {
+    if (!e.expense_date || !e.expense_date.startsWith(monthStr)) return false;
+  }
   return true;
 }
 
-function renderExpenses() {
-  const now = new Date();
-  const monthStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+function calcMonthlyTotal(monthStr) {
+  return expenses.filter(e => isActiveThisMonth(e, monthStr)).reduce((s, e) => s + Number(e.amount), 0);
+}
 
+function calcTransfers() {
+  const monthStr = getCurrentMonthStr();
+  const expensesTotal = calcMonthlyTotal(monthStr);
+  const balance = Number(settings.balance) || 0;
+  const deficit = balance < 0 ? Math.abs(balance) : 0;
+  const total = expensesTotal + deficit;
+  const erezPct = settings.erez_pct / 100;
+  const hilaPct = settings.hila_pct / 100;
+  return {
+    expensesTotal,
+    deficit,
+    total,
+    erez: Math.round(total * erezPct),
+    hila: Math.round(total * hilaPct),
+    balance
+  };
+}
+
+// ---- RENDER ----
+function render() {
+  renderHeader();
+  renderTransferCard();
+  renderExpenses();
+}
+
+function renderHeader() {
+  const monthStr = getCurrentMonthStr();
+  const [y, m] = monthStr.split('-');
+  const total = calcMonthlyTotal(monthStr);
+  const balance = Number(settings.balance) || 0;
+
+  document.getElementById('hdr-total').textContent = '₪' + total.toLocaleString();
+  document.getElementById('hdr-balance').textContent = (balance < 0 ? '-' : '') + '₪' + Math.abs(balance).toLocaleString();
+  document.getElementById('hdr-billing').textContent = 'יום ' + settings.billing_day;
+}
+
+function renderTransferCard() {
+  const now = new Date();
+  // Next transfer month = next month
+  const next = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  const label = MONTH_NAMES[next.getMonth()] + ' ' + next.getFullYear();
+  document.getElementById('next-month-label').textContent = label;
+
+  const { expensesTotal, deficit, total, erez, hila, balance } = calcTransfers();
+
+  document.getElementById('erez-transfer').textContent = '₪' + erez.toLocaleString();
+  document.getElementById('hila-transfer').textContent = '₪' + hila.toLocaleString();
+
+  const badge = document.getElementById('balance-badge');
+  if (balance < 0) {
+    badge.innerHTML = `<span class="negative-badge">מינוס ₪${Math.abs(balance).toLocaleString()}</span>`;
+  } else {
+    badge.innerHTML = '';
+  }
+
+  let breakdown = `<div class="breakdown-row"><span>הוצאות ילדים החודש</span><span>₪${expensesTotal.toLocaleString()}</span></div>`;
+  if (deficit > 0) {
+    breakdown += `<div class="breakdown-row negative"><span>כיסוי מינוס בחשבון</span><span>₪${deficit.toLocaleString()}</span></div>`;
+  }
+  breakdown += `<div class="breakdown-row" style="font-weight:500;margin-top:4px;padding-top:4px;border-top:.5px solid var(--border)"><span>סה"כ להעברה</span><span>₪${total.toLocaleString()}</span></div>`;
+  document.getElementById('transfer-breakdown').innerHTML = breakdown;
+}
+
+function renderExpenses() {
+  const monthStr = getCurrentMonthStr();
   const fixed = expenses.filter(e => e.type === 'fixed');
   const oneTime = expenses.filter(e => e.type === 'one-time');
 
+  if (expenses.length === 0) {
+    document.getElementById('expenses-content').innerHTML =
+      '<div class="empty"><div class="empty-icon">📋</div>אין הוצאות עדיין<br><small>לחץ + להוספה</small></div>';
+    return;
+  }
+
   let html = '';
-  if (fixed.length === 0 && oneTime.length === 0) {
-    html = '<div class="empty"><div class="empty-icon">📋</div>אין הוצאות עדיין<br><small>לחץ + להוספה</small></div>';
-  } else {
-    if (fixed.length > 0) {
-      html += '<div class="section-label">הוצאות קבועות</div>';
-      fixed.forEach(e => { html += renderExpenseCard(e, monthStr); });
-    }
-    if (oneTime.length > 0) {
-      html += '<div class="section-label" style="margin-top:1rem">הוצאות מזדמנות</div>';
-      oneTime.forEach(e => { html += renderExpenseCard(e, monthStr); });
-    }
+  if (fixed.length > 0) {
+    html += '<div class="section-label">הוצאות קבועות</div>';
+    fixed.forEach(e => html += expenseCard(e, monthStr));
+  }
+  if (oneTime.length > 0) {
+    html += '<div class="section-label" style="margin-top:1.25rem">הוצאות חד-פעמיות</div>';
+    oneTime.forEach(e => html += expenseCard(e, monthStr));
   }
   document.getElementById('expenses-content').innerHTML = html;
 }
 
-function renderExpenseCard(e, monthStr) {
-  const active = isExpenseActiveThisMonth(e, monthStr);
+function expenseCard(e, monthStr) {
+  const active = isActiveThisMonth(e, monthStr);
   const erezAmt = Math.round(Number(e.amount) * settings.erez_pct / 100);
   const hilaAmt = Math.round(Number(e.amount) * settings.hila_pct / 100);
-
   let meta = '';
   if (e.type === 'fixed') {
     if (e.end_type === 'date' && e.end_month) {
       const [y,m] = e.end_month.split('-');
-      const months = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
-      meta = 'עד ' + months[parseInt(m)-1] + ' ' + y;
+      meta = 'עד ' + MONTH_NAMES[parseInt(m)-1] + ' ' + y;
     } else {
       meta = 'עד ביטול';
     }
   } else {
-    if (e.expense_date) {
-      meta = new Date(e.expense_date).toLocaleDateString('he-IL');
-    }
+    meta = e.expense_date ? new Date(e.expense_date + 'T00:00:00').toLocaleDateString('he-IL') : '';
   }
-
   const pillClass = e.type === 'fixed' ? 'pill-fixed' : 'pill-one';
   const pillText = e.type === 'fixed' ? 'קבועה' : 'חד-פעמית';
-  const cardClass = active ? '' : 'inactive';
-
-  return `<div class="expense-card ${cardClass}">
+  const opacity = active ? '' : 'style="opacity:.5"';
+  return `<div class="expense-card" ${opacity}>
     <div style="flex:1">
-      <div class="exp-name">${e.description} <span class="pill ${pillClass}">${pillText}</span>${!active ? '<span class="pill pill-inactive">לא פעיל</span>' : ''}</div>
+      <div class="exp-name">${e.description} <span class="pill-tag ${pillClass}">${pillText}</span></div>
       <div class="exp-meta">${meta}</div>
     </div>
     <div class="exp-right">
       <div class="exp-amount">₪${Number(e.amount).toLocaleString()}</div>
       <div class="exp-split">ארז ₪${erezAmt.toLocaleString()} | הילה ₪${hilaAmt.toLocaleString()}</div>
-      <button class="delete-btn" onclick="deleteExpense('${e.id}')" title="מחק">✕</button>
+      <button class="delete-btn" onclick="deleteExpense('${e.id}')">✕</button>
     </div>
   </div>`;
+}
+
+// ---- BALANCE ----
+async function updateBalance() {
+  const val = parseFloat(document.getElementById('balance-input').value) || 0;
+  const { error } = await sb.from('settings').update({ balance: val, updated_at: new Date().toISOString() }).eq('id', 1);
+  if (error) { showToast('שגיאה'); return; }
+  settings.balance = val;
+  renderHeader();
+  renderTransferCard();
+  showToast('היתרה עודכנה ✓');
 }
 
 // ---- EXPENSE MODAL ----
 function openExpenseModal() {
   const now = new Date();
-  const monthStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+  const ms = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
   document.getElementById('f-desc').value = '';
   document.getElementById('f-amount').value = '';
-  document.getElementById('f-start-month').value = monthStr;
+  document.getElementById('f-start-month').value = ms;
   document.getElementById('f-end-month').value = '';
   document.getElementById('f-expense-date').value = now.toISOString().split('T')[0];
-  document.getElementById('f-paid-by').value = 'joint';
   selectType('fixed');
   selectEnd('none');
   document.getElementById('expense-modal').classList.add('open');
 }
 
-function closeModal(id) {
-  document.getElementById(id).classList.remove('open');
-}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
 function selectType(t) {
   expenseType = t;
@@ -666,14 +632,7 @@ async function submitExpense() {
   const amount = parseFloat(document.getElementById('f-amount').value);
   if (!desc || !amount || amount <= 0) { showToast('נא למלא תיאור וסכום'); return; }
 
-  const row = {
-    description: desc,
-    amount,
-    type: expenseType,
-    paid_by: document.getElementById('f-paid-by').value,
-    created_by: currentUser.email,
-    active: true
-  };
+  const row = { description: desc, amount, type: expenseType, active: true, created_by: currentUser.email };
 
   if (expenseType === 'fixed') {
     const sm = document.getElementById('f-start-month').value;
@@ -692,8 +651,7 @@ async function submitExpense() {
   if (error) { showToast('שגיאה בשמירה'); return; }
   closeModal('expense-modal');
   await loadExpenses();
-  renderExpenses();
-  updateHeader();
+  render();
   showToast('ההוצאה נוספה ✓');
 }
 
@@ -701,52 +659,41 @@ async function deleteExpense(id) {
   if (!confirm('למחוק הוצאה זו?')) return;
   await sb.from('expenses').update({ active: false }).eq('id', id);
   await loadExpenses();
-  renderExpenses();
-  updateHeader();
-  showToast('ההוצאה נמחקה');
+  render();
+  showToast('נמחק');
 }
 
 // ---- HISTORY ----
 async function renderHistory() {
-  const monthStr = historyMonth.getFullYear() + '-' + String(historyMonth.getMonth()+1).padStart(2,'0');
-  const monthNames = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
-  document.getElementById('history-month-label').textContent = monthNames[historyMonth.getMonth()] + ' ' + historyMonth.getFullYear();
-
-  const { data: transfers } = await sb.from('transfers').select('*').order('month', { ascending: false }).limit(20);
-
-  let html = '';
-  if (!transfers || transfers.length === 0) {
-    html = '<div class="empty"><div class="empty-icon">📂</div>אין היסטוריית העברות עדיין</div>';
-  } else {
-    transfers.forEach(t => {
-      const d = new Date(t.month);
-      const label = monthNames[d.getMonth()] + ' ' + d.getFullYear();
-      html += `<div class="transfer-card">
-        <div class="transfer-month">${label}</div>
-        <div class="transfer-row"><span>ארז העביר</span><span class="transfer-erez">₪${Number(t.erez_amount).toLocaleString()}</span></div>
-        <div class="transfer-row"><span>הילה העבירה</span><span class="transfer-hila">₪${Number(t.hila_amount).toLocaleString()}</span></div>
-        ${t.notes ? `<div style="font-size:13px;color:var(--text-secondary);margin-top:6px">${t.notes}</div>` : ''}
-      </div>`;
-    });
+  const { data } = await sb.from('transfers').select('*').order('month', { ascending: false }).limit(24);
+  if (!data || data.length === 0) {
+    document.getElementById('history-content').innerHTML =
+      '<div class="empty"><div class="empty-icon">📂</div>אין היסטוריה עדיין</div>';
+    return;
   }
+  let html = '';
+  data.forEach(t => {
+    const d = new Date(t.month);
+    const label = MONTH_NAMES[d.getMonth()] + ' ' + d.getFullYear();
+    const total = Number(t.erez_amount) + Number(t.hila_amount);
+    html += `<div class="history-card">
+      <div class="history-month">${label}</div>
+      <div class="history-row"><span>ארז</span><span style="color:var(--blue);font-weight:500">₪${Number(t.erez_amount).toLocaleString()}</span></div>
+      <div class="history-row"><span>הילה</span><span style="color:var(--pink);font-weight:500">₪${Number(t.hila_amount).toLocaleString()}</span></div>
+      <div class="history-row" style="border-top:.5px solid var(--border);margin-top:6px;padding-top:6px;font-weight:500"><span>סה"כ</span><span>₪${total.toLocaleString()}</span></div>
+      ${t.notes ? `<div style="font-size:13px;color:var(--text2);margin-top:6px">${t.notes}</div>` : ''}
+    </div>`;
+  });
   document.getElementById('history-content').innerHTML = html;
-}
-
-function changeHistoryMonth(dir) {
-  historyMonth.setMonth(historyMonth.getMonth() + dir);
-  renderHistory();
 }
 
 function openTransferModal() {
   const now = new Date();
-  const monthStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
-  document.getElementById('t-month').value = monthStr;
-
-  const total = expenses.filter(e => e.type === 'fixed' && isExpenseActiveThisMonth(e, monthStr)).reduce((s,e) => s + Number(e.amount), 0)
-    + expenses.filter(e => e.type === 'one-time' && e.expense_date?.startsWith(monthStr)).reduce((s,e) => s + Number(e.amount), 0);
-
-  document.getElementById('t-erez').value = Math.round(total * settings.erez_pct / 100);
-  document.getElementById('t-hila').value = Math.round(total * settings.hila_pct / 100);
+  const ms = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+  document.getElementById('t-month').value = ms;
+  const { erez, hila } = calcTransfers();
+  document.getElementById('t-erez').value = erez;
+  document.getElementById('t-hila').value = hila;
   document.getElementById('t-notes').value = '';
   document.getElementById('transfer-modal').classList.add('open');
 }
@@ -755,45 +702,38 @@ async function submitTransfer() {
   const month = document.getElementById('t-month').value;
   const erez = parseFloat(document.getElementById('t-erez').value);
   const hila = parseFloat(document.getElementById('t-hila').value);
-  if (!month || !erez || !hila) { showToast('נא למלא את כל השדות'); return; }
-
+  if (!month || isNaN(erez) || isNaN(hila)) { showToast('נא למלא את כל השדות'); return; }
   const { error } = await sb.from('transfers').insert({
-    month: month + '-01',
-    erez_amount: erez,
-    hila_amount: hila,
+    month: month + '-01', erez_amount: erez, hila_amount: hila,
     notes: document.getElementById('t-notes').value.trim() || null
   });
-  if (error) { showToast('שגיאה בשמירה'); return; }
+  if (error) { showToast('שגיאה'); return; }
   closeModal('transfer-modal');
   renderHistory();
   showToast('ההעברה נרשמה ✓');
 }
 
 // ---- SETTINGS ----
-function onSliderChange(val) {
+function onSlider(val) {
   const v = parseInt(val);
-  document.getElementById('settings-erez-val').textContent = v + '%';
-  document.getElementById('settings-hila-val').textContent = (100-v) + '%';
+  document.getElementById('s-erez-val').textContent = v + '%';
+  document.getElementById('s-hila-val').textContent = (100-v) + '%';
 }
 
 async function saveSettings() {
-  const erez_pct = parseInt(document.getElementById('settings-erez-pct').value);
-  const balance = parseFloat(document.getElementById('settings-balance').value) || 0;
-  const billing_day = parseInt(document.getElementById('settings-billing').value) || 10;
+  const erez_pct = parseInt(document.getElementById('s-erez-pct').value);
+  const billing_day = parseInt(document.getElementById('s-billing').value) || 10;
   const hila_pct = 100 - erez_pct;
-
-  const { error } = await sb.from('settings').update({ erez_pct, hila_pct, balance, billing_day, updated_at: new Date().toISOString() }).eq('id', 1);
-  if (error) { showToast('שגיאה בשמירה'); return; }
-  settings = { erez_pct, hila_pct, balance, billing_day };
-  updateHeader();
-  renderExpenses();
-  showToast('ההגדרות נשמרו ✓');
+  const { error } = await sb.from('settings').update({ erez_pct, hila_pct, billing_day, updated_at: new Date().toISOString() }).eq('id', 1);
+  if (error) { showToast('שגיאה'); return; }
+  settings = { ...settings, erez_pct, hila_pct, billing_day };
+  render();
+  showToast('נשמר ✓');
 }
 
 // ---- TABS ----
 function switchTab(tab) {
-  currentTab = tab;
-  document.querySelectorAll('.tab').forEach((t, i) => {
+  document.querySelectorAll('.tab').forEach((t,i) => {
     t.classList.toggle('active', ['expenses','history','settings'][i] === tab);
   });
   document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
@@ -810,17 +750,14 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-}); // close onAuthStateChange
-}); // close handleAuthRedirect.then
-
-// Close modals on outside tap
 document.querySelectorAll('.modal-overlay').forEach(el => {
   el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
 });
 
-// Init history month label
-const monthNames = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
-document.getElementById('history-month-label').textContent = monthNames[historyMonth.getMonth()] + ' ' + historyMonth.getFullYear();
+// init label
+const _now = new Date();
+const _next = new Date(_now.getFullYear(), _now.getMonth()+1, 1);
+document.getElementById('next-month-label').textContent = MONTH_NAMES[_next.getMonth()] + ' ' + _next.getFullYear();
 </script>
 </body>
 </html>
