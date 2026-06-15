@@ -459,6 +459,22 @@ let currentTab = 'expenses';
 let historyMonth = new Date();
 historyMonth.setDate(1);
 
+// ---- HANDLE AUTH REDIRECT ----
+async function handleAuthRedirect() {
+  const hash = window.location.hash;
+  if (hash && hash.includes('access_token')) {
+    const params = new URLSearchParams(hash.substring(1));
+    const access_token = params.get('access_token');
+    const refresh_token = params.get('refresh_token');
+    if (access_token) {
+      const { error } = await sb.auth.setSession({ access_token, refresh_token });
+      if (!error) {
+        window.history.replaceState(null, '', window.location.pathname);
+      }
+    }
+  }
+}
+
 // ---- AUTH ----
 async function loginWithGoogle() {
   const { error } = await sb.auth.signInWithOAuth({
@@ -476,6 +492,7 @@ async function logout() {
   location.reload();
 }
 
+handleAuthRedirect().then(() => {
 sb.auth.onAuthStateChange(async (event, session) => {
   if (session?.user) {
     const email = session.user.email;
@@ -792,6 +809,9 @@ function showToast(msg) {
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
 }
+
+}); // close onAuthStateChange
+}); // close handleAuthRedirect.then
 
 // Close modals on outside tap
 document.querySelectorAll('.modal-overlay').forEach(el => {
