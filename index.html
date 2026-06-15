@@ -442,7 +442,13 @@ const SUPABASE_URL = 'https://bmsmwluahzkkwiiumbki.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJtc213bHVhaHpra3dpaXVtYmtpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1MDg0NjEsImV4cCI6MjA5NzA4NDQ2MX0.oXjCZR0PVUt-rp0OvsyefrpQVE09ULANojwFjcXlhI4';
 const ALLOWED_EMAILS = ['erezmi77@gmail.com', 'hilla_shallem@yahoo.com'];
 
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: {
+    detectSessionInUrl: true,
+    persistSession: true,
+    autoRefreshToken: true
+  }
+});
 
 let currentUser = null;
 let settings = { erez_pct: 60, hila_pct: 40, balance: 0, billing_day: 10 };
@@ -458,7 +464,7 @@ async function loginWithGoogle() {
   const { error } = await sb.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: window.location.href,
+      redirectTo: 'https://erezmichaeli77.github.io/family-finance',
       queryParams: { prompt: 'select_account' }
     }
   });
