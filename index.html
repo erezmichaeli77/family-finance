@@ -457,7 +457,10 @@ historyMonth.setDate(1);
 async function loginWithGoogle() {
   const { error } = await sb.auth.signInWithOAuth({
     provider: 'google',
-    options: { redirectTo: window.location.href }
+    options: {
+      redirectTo: window.location.href,
+      queryParams: { prompt: 'select_account' }
+    }
   });
   if (error) showToast('שגיאה בכניסה');
 }
