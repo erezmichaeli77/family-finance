@@ -318,12 +318,22 @@ document.getElementById('next-month-label').textContent = MN[_nx.getMonth()] + '
 
 async function init() {
   // Handle OAuth hash redirect
+  // Manual session storage
+  const savedSession = localStorage.getItem("ff_session");
+  if (savedSession) {
+    try {
+      const s = JSON.parse(savedSession);
+      await sb.auth.setSession({ access_token: s.access_token, refresh_token: s.refresh_token });
+    } catch(e) { localStorage.removeItem("ff_session"); }
+  }
+
   const hash = window.location.hash;
   if (hash && hash.includes('access_token')) {
     const p = new URLSearchParams(hash.substring(1));
     const at = p.get('access_token'), rt = p.get('refresh_token');
     if (at) {
       await sb.auth.setSession({ access_token: at, refresh_token: rt });
+      localStorage.setItem("ff_session", JSON.stringify({ access_token: at, refresh_token: rt }));
       window.history.replaceState(null, '', window.location.pathname);
     }
   }
@@ -341,6 +351,7 @@ async function init() {
     if (event === 'SIGNED_IN' && session?.user) {
       await showApp(session.user);
     } else if (event === 'SIGNED_OUT') {
+      localStorage.removeItem("ff_session");
       show('auth-screen');
     }
   });
