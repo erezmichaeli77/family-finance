@@ -7,41 +7,35 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
-  --teal: #1D9E75; --teal-light: #E1F5EE; --teal-dark: #0F6E56;
-  --blue: #185FA5; --blue-light: #E6F1FB;
-  --pink: #993556; --pink-light: #FBEAF0;
-  --amber: #854F0B; --amber-light: #FAEEDA;
-  --red: #A32D2D; --red-light: #FCEBEB;
-  --gray: #5F5E5A; --gray-light: #F1EFE8;
-  --text: #2C2C2A; --text2: #888780;
-  --border: rgba(0,0,0,0.12);
-  --bg: #ffffff; --bg2: #F8F7F4;
-  --r: 12px; --r2: 8px;
+  --teal:#1D9E75;--teal-light:#E1F5EE;--teal-dark:#0F6E56;
+  --blue:#185FA5;--blue-light:#E6F1FB;
+  --pink:#993556;--pink-light:#FBEAF0;
+  --amber:#854F0B;--amber-light:#FAEEDA;
+  --red:#A32D2D;--red-light:#FCEBEB;
+  --text:#2C2C2A;--text2:#888780;
+  --border:rgba(0,0,0,0.12);--bg:#fff;--bg2:#F8F7F4;
+  --r:12px;--r2:8px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:var(--bg2);color:var(--text);min-height:100vh}
-
-/* AUTH */
 #auth-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:2rem}
 .auth-logo{font-size:52px;margin-bottom:1rem}
 .auth-title{font-size:24px;font-weight:600;margin-bottom:.5rem}
 .auth-sub{font-size:15px;color:var(--text2);margin-bottom:2.5rem;text-align:center;line-height:1.6}
-.btn-google{display:flex;align-items:center;gap:12px;background:white;border:1px solid var(--border);border-radius:var(--r);padding:14px 24px;font-size:16px;font-weight:500;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.08);width:100%;max-width:320px;justify-content:center;transition:box-shadow .2s}
-.btn-google:hover{box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.btn-google{display:flex;align-items:center;gap:12px;background:white;border:1px solid var(--border);border-radius:var(--r);padding:14px 24px;font-size:16px;font-weight:500;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.08);width:100%;max-width:320px;justify-content:center}
 .auth-note{font-size:13px;color:var(--text2);margin-top:1.5rem;text-align:center}
-
-/* APP */
 #app-screen{display:none;max-width:480px;margin:0 auto;padding-bottom:90px}
-
-/* HEADER */
 .header{background:var(--teal);color:white;padding:1rem 1.25rem 1.25rem;position:sticky;top:0;z-index:10}
 .header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
 .header-title{font-size:17px;font-weight:600}
 .user-info{display:flex;align-items:center;gap:8px}
 .user-name{background:rgba(255,255,255,.2);border-radius:20px;padding:4px 12px;font-size:13px}
 .logout-btn{background:none;border:none;color:rgba(255,255,255,.75);font-size:13px;cursor:pointer;padding:4px}
-
-/* TRANSFER CARD */
+.summary-pills{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.summary-pills::-webkit-scrollbar{display:none}
+.pill-card{background:rgba(255,255,255,.15);border-radius:20px;padding:6px 14px;white-space:nowrap;color:white}
+.pill-label{font-size:11px;opacity:.8}
+.pill-val{font-size:14px;font-weight:600}
 .transfer-next{background:white;border-radius:var(--r);margin:1rem;box-shadow:0 2px 8px rgba(0,0,0,.08)}
 .transfer-header{background:var(--teal-dark);color:white;border-radius:var(--r) var(--r) 0 0;padding:12px 16px;font-size:14px;font-weight:500;display:flex;justify-content:space-between;align-items:center}
 .transfer-body{padding:14px 16px}
@@ -52,38 +46,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;ba
 .avatar-e{background:var(--blue-light);color:var(--blue)}
 .avatar-h{background:var(--pink-light);color:var(--pink)}
 .person-name{font-size:15px;font-weight:500}
-.transfer-amount-e{font-size:20px;font-weight:700;color:var(--blue)}
-.transfer-amount-h{font-size:20px;font-weight:700;color:var(--pink)}
+.amt-e{font-size:20px;font-weight:700;color:var(--blue)}
+.amt-h{font-size:20px;font-weight:700;color:var(--pink)}
 .transfer-breakdown{padding:10px 16px 14px;border-top:.5px solid var(--border);background:var(--bg2);border-radius:0 0 var(--r) var(--r)}
-.breakdown-row{display:flex;justify-content:space-between;font-size:13px;color:var(--text2);padding:2px 0}
-.breakdown-row.negative{color:var(--red)}
-
-/* BALANCE UPDATE */
+.brow{display:flex;justify-content:space-between;font-size:13px;color:var(--text2);padding:2px 0}
+.brow.neg{color:var(--red)}
 .balance-row{display:flex;gap:8px;padding:0 1rem 1rem}
-.balance-input-wrap{flex:1;position:relative}
-.balance-input-wrap input{width:100%;padding:10px 40px 10px 12px;border:.5px solid var(--border);border-radius:var(--r2);font-size:15px;background:white;color:var(--text)}
-.balance-input-wrap .currency{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text2);font-size:15px}
-.btn-update-balance{padding:10px 16px;background:var(--teal);color:white;border:none;border-radius:var(--r2);font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap}
-
-/* SUMMARY PILLS */
-.summary-pills{display:flex;gap:8px;padding:0 1rem .5rem;overflow-x:auto;scrollbar-width:none}
-.summary-pills::-webkit-scrollbar{display:none}
-.pill-card{background:rgba(255,255,255,.15);border-radius:20px;padding:6px 14px;white-space:nowrap;text-align:center;color:white}
-.pill-label{font-size:11px;opacity:.8}
-.pill-val{font-size:14px;font-weight:600}
-
-/* TABS */
+.balance-wrap{flex:1;position:relative}
+.balance-wrap input{width:100%;padding:10px 12px 10px 40px;border:.5px solid var(--border);border-radius:var(--r2);font-size:15px;background:white;color:var(--text)}
+.currency{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text2);font-size:15px}
+.btn-upd{padding:10px 16px;background:var(--teal);color:white;border:none;border-radius:var(--r2);font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap}
 .tabs{display:flex;background:white;border-bottom:.5px solid var(--border);position:sticky;top:0;z-index:9}
-.tab{flex:1;padding:12px 0;text-align:center;font-size:14px;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
+.tab{flex:1;padding:12px 0;text-align:center;font-size:14px;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent}
 .tab.active{color:var(--teal);border-bottom-color:var(--teal);font-weight:500}
-
-/* PANES */
 .pane{display:none;padding:1rem}
 .pane.active{display:block}
-.section-label{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.6px;margin:1rem 0 8px}
-.section-label:first-child{margin-top:0}
-
-/* EXPENSE CARD */
+.sec{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.6px;margin:1rem 0 8px}
+.sec:first-child{margin-top:0}
 .expense-card{background:white;border-radius:var(--r);border:.5px solid var(--border);padding:14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 .exp-name{font-size:15px;font-weight:500;margin-bottom:3px}
 .exp-meta{font-size:12px;color:var(--text2)}
@@ -93,36 +72,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;ba
 .pill-tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;margin-right:4px}
 .pill-fixed{background:var(--teal-light);color:var(--teal-dark)}
 .pill-one{background:var(--amber-light);color:var(--amber)}
-.delete-btn{background:none;border:none;color:var(--text2);font-size:16px;cursor:pointer;padding:4px;margin-top:4px;display:block}
-.delete-btn:hover{color:var(--red)}
-
-/* FAB */
-.fab{position:fixed;bottom:24px;left:24px;width:56px;height:56px;border-radius:50%;background:var(--teal);color:white;border:none;font-size:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(29,158,117,.4);z-index:50;transition:transform .15s}
-.fab:active{transform:scale(.93)}
-
-/* MODAL */
+.del-btn{background:none;border:none;color:var(--text2);font-size:16px;cursor:pointer;padding:4px;margin-top:4px;display:block}
+.fab{position:fixed;bottom:24px;left:24px;width:56px;height:56px;border-radius:50%;background:var(--teal);color:white;border:none;font-size:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(29,158,117,.4);z-index:50}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:flex-end;justify-content:center}
 .modal-overlay.open{display:flex}
 .modal{background:white;border-radius:var(--r) var(--r) 0 0;padding:1.5rem;width:100%;max-width:480px;max-height:92vh;overflow-y:auto}
 .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}
 .modal-title{font-size:18px;font-weight:600}
-.modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--text2);line-height:1}
+.modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--text2)}
 .form-label{font-size:13px;color:var(--text2);margin-bottom:5px;display:block}
 .form-group{margin-bottom:14px}
-input[type=text],input[type=number],input[type=date],input[type=month],select{width:100%;padding:10px 12px;border:.5px solid var(--border);border-radius:var(--r2);font-size:15px;color:var(--text);background:white;outline:none;transition:border-color .2s;font-family:inherit}
+input[type=text],input[type=number],input[type=date],input[type=month],select{width:100%;padding:10px 12px;border:.5px solid var(--border);border-radius:var(--r2);font-size:15px;color:var(--text);background:white;outline:none;font-family:inherit}
 input:focus,select:focus{border-color:var(--teal)}
 .toggle-group{display:flex;gap:8px}
-.toggle-btn{flex:1;padding:10px;border:.5px solid var(--border);border-radius:var(--r2);background:white;color:var(--text2);font-size:14px;cursor:pointer;transition:all .15s;font-family:inherit}
+.toggle-btn{flex:1;padding:10px;border:.5px solid var(--border);border-radius:var(--r2);background:white;color:var(--text2);font-size:14px;cursor:pointer;font-family:inherit}
 .toggle-btn.active{background:var(--teal);color:white;border-color:var(--teal);font-weight:500}
 .btn-submit{width:100%;padding:14px;background:var(--teal);color:white;border:none;border-radius:var(--r);font-size:16px;font-weight:500;cursor:pointer;margin-top:8px;font-family:inherit}
 .btn-cancel{width:100%;padding:12px;background:none;color:var(--text2);border:.5px solid var(--border);border-radius:var(--r);font-size:15px;cursor:pointer;margin-top:8px;font-family:inherit}
-
-/* HISTORY */
-.history-card{background:white;border-radius:var(--r);border:.5px solid var(--border);padding:14px;margin-bottom:8px}
-.history-month{font-size:15px;font-weight:500;margin-bottom:10px;color:var(--text)}
-.history-row{display:flex;justify-content:space-between;font-size:14px;padding:3px 0}
-
-/* SETTINGS */
+.hist-card{background:white;border-radius:var(--r);border:.5px solid var(--border);padding:14px;margin-bottom:8px}
+.hist-month{font-size:15px;font-weight:500;margin-bottom:10px}
+.hist-row{display:flex;justify-content:space-between;font-size:14px;padding:3px 0}
 .settings-card{background:white;border-radius:var(--r);border:.5px solid var(--border);padding:14px;margin-bottom:12px}
 .settings-title{font-size:15px;font-weight:500;margin-bottom:12px}
 .slider-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
@@ -130,30 +99,22 @@ input:focus,select:focus{border-color:var(--teal)}
 input[type=range]{flex:1;accent-color:var(--teal)}
 .slider-val{font-size:14px;font-weight:500;min-width:36px;text-align:left}
 .btn-save{width:100%;padding:12px;background:var(--teal);color:white;border:none;border-radius:var(--r);font-size:15px;font-weight:500;cursor:pointer;font-family:inherit}
-
-/* EMPTY */
 .empty{text-align:center;padding:3rem 1rem;color:var(--text2);font-size:15px}
 .empty-icon{font-size:40px;margin-bottom:1rem}
-
-/* TOAST */
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#2C2C2A;color:white;padding:10px 20px;border-radius:20px;font-size:14px;z-index:200;opacity:0;transition:opacity .3s;white-space:nowrap;pointer-events:none}
 .toast.show{opacity:1}
-
-/* LOADING */
-.loading{text-align:center;padding:3rem;color:var(--text2)}
+.spinner-wrap{text-align:center;padding:3rem;color:var(--text2)}
 .spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 1rem}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-.negative-badge{background:var(--red-light);color:var(--red);border-radius:20px;padding:2px 10px;font-size:12px;font-weight:500}
+.neg-badge{background:var(--red-light);color:var(--red);border-radius:20px;padding:2px 10px;font-size:12px;font-weight:500}
 </style>
 </head>
 <body>
 
-<!-- AUTH -->
 <div id="auth-screen">
   <div class="auth-logo">👨‍👧‍👦</div>
   <div class="auth-title">כספים משותפים</div>
-  <div class="auth-sub">ניהול הוצאות ילדים<br>ארז ❤️ הילה</div>
+  <div class="auth-sub">ניהול הוצאות ילדים משותפות<br>ארז והילה</div>
   <button class="btn-google" onclick="loginWithGoogle()">
     <svg width="20" height="20" viewBox="0 0 24 24">
       <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -166,10 +127,7 @@ input[type=range]{flex:1;accent-color:var(--teal)}
   <div class="auth-note">גישה מוגבלת לארז ולהילה בלבד</div>
 </div>
 
-<!-- APP -->
 <div id="app-screen">
-
-  <!-- HEADER -->
   <div class="header">
     <div class="header-top">
       <div class="header-title">👨‍👧‍👦 כספים משותפים</div>
@@ -179,22 +137,12 @@ input[type=range]{flex:1;accent-color:var(--teal)}
       </div>
     </div>
     <div class="summary-pills">
-      <div class="pill-card">
-        <div class="pill-label">הוצאות החודש</div>
-        <div class="pill-val" id="hdr-total">₪0</div>
-      </div>
-      <div class="pill-card">
-        <div class="pill-label">יתרה בחשבון</div>
-        <div class="pill-val" id="hdr-balance">₪0</div>
-      </div>
-      <div class="pill-card">
-        <div class="pill-label">חיוב אשראי</div>
-        <div class="pill-val" id="hdr-billing">יום 10</div>
-      </div>
+      <div class="pill-card"><div class="pill-label">הוצאות החודש</div><div class="pill-val" id="hdr-total">₪0</div></div>
+      <div class="pill-card"><div class="pill-label">יתרה בחשבון</div><div class="pill-val" id="hdr-balance">₪0</div></div>
+      <div class="pill-card"><div class="pill-label">חיוב אשראי</div><div class="pill-val" id="hdr-billing">יום 10</div></div>
     </div>
   </div>
 
-  <!-- NEXT TRANSFER CARD -->
   <div class="transfer-next">
     <div class="transfer-header">
       <span>💸 להעברה הבאה — <span id="next-month-label"></span></span>
@@ -206,49 +154,44 @@ input[type=range]{flex:1;accent-color:var(--teal)}
           <div class="avatar avatar-e">ארז</div>
           <div class="person-name">ארז מעביר</div>
         </div>
-        <div class="transfer-amount-e" id="erez-transfer">₪0</div>
+        <div class="amt-e" id="erez-transfer">₪0</div>
       </div>
       <div class="transfer-row-big">
         <div class="person-label">
           <div class="avatar avatar-h">הילה</div>
           <div class="person-name">הילה מעבירה</div>
         </div>
-        <div class="transfer-amount-h" id="hila-transfer">₪0</div>
+        <div class="amt-h" id="hila-transfer">₪0</div>
       </div>
     </div>
     <div class="transfer-breakdown" id="transfer-breakdown"></div>
   </div>
 
-  <!-- BALANCE UPDATE -->
   <div class="balance-row">
-    <div class="balance-input-wrap">
+    <div class="balance-wrap">
       <input type="number" id="balance-input" placeholder="יתרה נוכחית">
       <span class="currency">₪</span>
     </div>
-    <button class="btn-update-balance" onclick="updateBalance()">עדכן יתרה</button>
+    <button class="btn-upd" onclick="updateBalance()">עדכן יתרה</button>
   </div>
 
-  <!-- TABS -->
   <div class="tabs">
     <div class="tab active" onclick="switchTab('expenses')">הוצאות</div>
     <div class="tab" onclick="switchTab('history')">היסטוריה</div>
     <div class="tab" onclick="switchTab('settings')">הגדרות</div>
   </div>
 
-  <!-- EXPENSES -->
   <div id="pane-expenses" class="pane active">
-    <div id="expenses-content"><div class="loading"><div class="spinner"></div>טוען...</div></div>
+    <div id="expenses-content"><div class="spinner-wrap"><div class="spinner"></div>טוען...</div></div>
   </div>
 
-  <!-- HISTORY -->
   <div id="pane-history" class="pane">
-    <div id="history-content"><div class="loading"><div class="spinner"></div>טוען...</div></div>
+    <div id="history-content"><div class="spinner-wrap"><div class="spinner"></div>טוען...</div></div>
     <button class="btn-submit" style="margin-top:.5rem" onclick="openTransferModal()">+ רשום העברה שבוצעה</button>
   </div>
 
-  <!-- SETTINGS -->
   <div id="pane-settings" class="pane">
-    <div class="section-label">חלוקת הוצאות</div>
+    <div class="sec">חלוקת הוצאות</div>
     <div class="settings-card">
       <div class="settings-title">אחוז השתתפות</div>
       <div class="slider-row">
@@ -262,7 +205,7 @@ input[type=range]{flex:1;accent-color:var(--teal)}
         <span class="slider-val" id="s-hila-val">40%</span>
       </div>
     </div>
-    <div class="section-label">כרטיס אשראי</div>
+    <div class="sec">כרטיס אשראי</div>
     <div class="settings-card">
       <div class="form-group" style="margin-bottom:0">
         <label class="form-label">יום חיוב בחודש</label>
@@ -273,7 +216,7 @@ input[type=range]{flex:1;accent-color:var(--teal)}
   </div>
 </div>
 
-<!-- ADD EXPENSE MODAL -->
+<!-- EXPENSE MODAL -->
 <div class="modal-overlay" id="expense-modal">
   <div class="modal">
     <div class="modal-header">
@@ -350,46 +293,81 @@ input[type=range]{flex:1;accent-color:var(--teal)}
   </div>
 </div>
 
-<button class="fab" id="fab-btn" onclick="openExpenseModal()" aria-label="הוסף הוצאה">+</button>
+<button class="fab" id="fab-btn" onclick="openExpenseModal()">+</button>
 <div class="toast" id="toast"></div>
 
 <script>
-const SUPABASE_URL = 'https://bmsmwluahzkkwiiumbki.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJtc213bHVhaHpra3dpaXVtYmtpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1MDg0NjEsImV4cCI6MjA5NzA4NDQ2MX0.oXjCZR0PVUt-rp0OvsyefrpQVE09ULANojwFjcXlhI4';
+const SURL = 'https://bmsmwluahzkkwiiumbki.supabase.co';
+const SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJtc213bHVhaHpra3dpaXVtYmtpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1MDg0NjEsImV4cCI6MjA5NzA4NDQ2MX0.oXjCZR0PVUt-rp0OvsyefrpQVE09ULANojwFjcXlhI4';
 const ALLOWED = ['erezmi77@gmail.com', 'hilla_shallem@yahoo.com'];
-const MONTH_NAMES = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+const MN = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
 
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+const sb = supabase.createClient(SURL, SKEY, {
   auth: { detectSessionInUrl: true, persistSession: true, autoRefreshToken: true }
 });
 
-let currentUser = null;
-let settings = { erez_pct: 60, hila_pct: 40, balance: 0, billing_day: 10 };
-let expenses = [];
-let expenseType = 'fixed';
+let user = null;
+let cfg = { erez_pct: 60, hila_pct: 40, balance: 0, billing_day: 10 };
+let exps = [];
+let expType = 'fixed';
 let endType = 'none';
 
-// ---- AUTH ----
-async function handleAuthRedirect() {
+// Init next month label
+const _n = new Date(), _nx = new Date(_n.getFullYear(), _n.getMonth()+1, 1);
+document.getElementById('next-month-label').textContent = MN[_nx.getMonth()] + ' ' + _nx.getFullYear();
+
+async function init() {
+  // Handle OAuth hash redirect
   const hash = window.location.hash;
   if (hash && hash.includes('access_token')) {
-    const params = new URLSearchParams(hash.substring(1));
-    const access_token = params.get('access_token');
-    const refresh_token = params.get('refresh_token');
-    if (access_token) {
-      await sb.auth.setSession({ access_token, refresh_token });
+    const p = new URLSearchParams(hash.substring(1));
+    const at = p.get('access_token'), rt = p.get('refresh_token');
+    if (at) {
+      await sb.auth.setSession({ access_token: at, refresh_token: rt });
       window.history.replaceState(null, '', window.location.pathname);
     }
   }
+
+  // Check existing session
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user) {
+    await showApp(session.user);
+  } else {
+    show('auth-screen');
+  }
+
+  // Listen for auth changes
+  sb.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN' && session?.user) {
+      await showApp(session.user);
+    } else if (event === 'SIGNED_OUT') {
+      show('auth-screen');
+    }
+  });
+}
+
+function show(id) {
+  document.getElementById('auth-screen').style.display = id === 'auth-screen' ? 'flex' : 'none';
+  document.getElementById('app-screen').style.display = id === 'app-screen' ? 'block' : 'none';
+}
+
+async function showApp(u) {
+  if (!ALLOWED.includes(u.email)) {
+    await sb.auth.signOut();
+    document.getElementById('auth-screen').innerHTML = '<div style="text-align:center;padding:3rem"><div style="font-size:48px">🚫</div><div style="font-size:18px;font-weight:600;margin-top:1rem">אין גישה</div></div>';
+    show('auth-screen');
+    return;
+  }
+  user = u;
+  document.getElementById('user-name').textContent = u.email === 'erezmi77@gmail.com' ? 'ארז' : 'הילה';
+  show('app-screen');
+  await loadAll();
 }
 
 async function loginWithGoogle() {
   await sb.auth.signInWithOAuth({
     provider: 'google',
-    options: {
-      redirectTo: 'https://erezmichaeli77.github.io/family-finance',
-      queryParams: { prompt: 'select_account' }
-    }
+    options: { redirectTo: 'https://erezmichaeli77.github.io/family-finance', queryParams: { prompt: 'select_account' } }
   });
 }
 
@@ -398,300 +376,215 @@ async function logout() {
   location.reload();
 }
 
-handleAuthRedirect().then(() => {
-  sb.auth.onAuthStateChange(async (event, session) => {
-    if (session?.user) {
-      const email = session.user.email;
-      if (!ALLOWED.includes(email)) {
-        await sb.auth.signOut();
-        document.getElementById('auth-screen').innerHTML =
-          '<div style="text-align:center;padding:3rem"><div style="font-size:48px;margin-bottom:1rem">🚫</div><div style="font-size:18px;font-weight:600">אין גישה</div><div style="color:#888;margin-top:.5rem">האימייל הזה אינו מורשה</div></div>';
-        return;
-      }
-      currentUser = session.user;
-      const name = email === 'erezmi77@gmail.com' ? 'ארז' : 'הילה';
-      document.getElementById('user-name').textContent = name;
-      document.getElementById('auth-screen').style.display = 'none';
-      document.getElementById('app-screen').style.display = 'block';
-      await loadAll();
-    } else {
-      document.getElementById('auth-screen').style.display = 'flex';
-      document.getElementById('app-screen').style.display = 'none';
-    }
-  });
-});
-
-// ---- LOAD ----
+// LOAD
 async function loadAll() {
-  await loadSettings();
-  await loadExpenses();
+  await Promise.all([loadCfg(), loadExps()]);
   render();
 }
 
-async function loadSettings() {
-  const { data } = await sb.from('settings').select('*').eq('id', 1).single();
+async function loadCfg() {
+  const { data, error } = await sb.from('settings').select('*').eq('id', 1).single();
+  if (error) { console.error('settings error:', error); return; }
   if (data) {
-    settings = data;
-    document.getElementById('s-erez-pct').value = settings.erez_pct;
-    document.getElementById('s-erez-val').textContent = settings.erez_pct + '%';
-    document.getElementById('s-hila-val').textContent = settings.hila_pct + '%';
-    document.getElementById('s-billing').value = settings.billing_day;
-    document.getElementById('balance-input').value = settings.balance || '';
+    cfg = data;
+    document.getElementById('s-erez-pct').value = cfg.erez_pct;
+    document.getElementById('s-erez-val').textContent = cfg.erez_pct + '%';
+    document.getElementById('s-hila-val').textContent = cfg.hila_pct + '%';
+    document.getElementById('s-billing').value = cfg.billing_day;
+    document.getElementById('balance-input').value = cfg.balance || '';
   }
 }
 
-async function loadExpenses() {
-  const { data } = await sb.from('expenses').select('*').eq('active', true).order('created_at', { ascending: false });
-  expenses = data || [];
+async function loadExps() {
+  const { data, error } = await sb.from('expenses').select('*').eq('active', true).order('created_at', { ascending: false });
+  if (error) { console.error('expenses error:', error); return; }
+  exps = data || [];
 }
 
-// ---- COMPUTE ----
-function getCurrentMonthStr() {
+// COMPUTE
+function monthStr() {
   const n = new Date();
   return n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0');
 }
 
-function isActiveThisMonth(e, monthStr) {
+function isActive(e, ms) {
   if (e.type === 'fixed') {
-    if (e.start_month) {
-      const sm = e.start_month.substring(0,7);
-      if (sm > monthStr) return false;
-    }
-    if (e.end_type === 'date' && e.end_month && e.end_month < monthStr) return false;
+    if (e.start_month && e.start_month.substring(0,7) > ms) return false;
+    if (e.end_type === 'date' && e.end_month && e.end_month < ms) return false;
   } else {
-    if (!e.expense_date || !e.expense_date.startsWith(monthStr)) return false;
+    if (!e.expense_date || !e.expense_date.startsWith(ms)) return false;
   }
   return true;
 }
 
-function calcMonthlyTotal(monthStr) {
-  return expenses.filter(e => isActiveThisMonth(e, monthStr)).reduce((s, e) => s + Number(e.amount), 0);
+function calcTotal(ms) {
+  return exps.filter(e => isActive(e, ms)).reduce((s,e) => s + Number(e.amount), 0);
 }
 
-function calcTransfers() {
-  const monthStr = getCurrentMonthStr();
-  const expensesTotal = calcMonthlyTotal(monthStr);
-  const balance = Number(settings.balance) || 0;
-  const deficit = balance < 0 ? Math.abs(balance) : 0;
-  const total = expensesTotal + deficit;
-  const erezPct = settings.erez_pct / 100;
-  const hilaPct = settings.hila_pct / 100;
-  return {
-    expensesTotal,
-    deficit,
-    total,
-    erez: Math.round(total * erezPct),
-    hila: Math.round(total * hilaPct),
-    balance
-  };
+function calcTransfer() {
+  const ms = monthStr();
+  const expTotal = calcTotal(ms);
+  const bal = Number(cfg.balance) || 0;
+  const deficit = bal < 0 ? Math.abs(bal) : 0;
+  const total = expTotal + deficit;
+  return { expTotal, deficit, total, bal,
+    erez: Math.round(total * cfg.erez_pct / 100),
+    hila: Math.round(total * cfg.hila_pct / 100) };
 }
 
-// ---- RENDER ----
+// RENDER
 function render() {
-  renderHeader();
-  renderTransferCard();
-  renderExpenses();
-}
-
-function renderHeader() {
-  const monthStr = getCurrentMonthStr();
-  const [y, m] = monthStr.split('-');
-  const total = calcMonthlyTotal(monthStr);
-  const balance = Number(settings.balance) || 0;
-
+  const ms = monthStr();
+  const total = calcTotal(ms);
+  const bal = Number(cfg.balance) || 0;
   document.getElementById('hdr-total').textContent = '₪' + total.toLocaleString();
-  document.getElementById('hdr-balance').textContent = (balance < 0 ? '-' : '') + '₪' + Math.abs(balance).toLocaleString();
-  document.getElementById('hdr-billing').textContent = 'יום ' + settings.billing_day;
-}
+  document.getElementById('hdr-balance').textContent = (bal < 0 ? '-' : '') + '₪' + Math.abs(bal).toLocaleString();
+  document.getElementById('hdr-billing').textContent = 'יום ' + cfg.billing_day;
 
-function renderTransferCard() {
-  const now = new Date();
-  // Next transfer month = next month
-  const next = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-  const label = MONTH_NAMES[next.getMonth()] + ' ' + next.getFullYear();
-  document.getElementById('next-month-label').textContent = label;
-
-  const { expensesTotal, deficit, total, erez, hila, balance } = calcTransfers();
-
+  const { expTotal, deficit, total: ttl, erez, hila, bal: b } = calcTransfer();
   document.getElementById('erez-transfer').textContent = '₪' + erez.toLocaleString();
   document.getElementById('hila-transfer').textContent = '₪' + hila.toLocaleString();
+  document.getElementById('balance-badge').innerHTML = b < 0 ? `<span class="neg-badge">מינוס ₪${Math.abs(b).toLocaleString()}</span>` : '';
 
-  const badge = document.getElementById('balance-badge');
-  if (balance < 0) {
-    badge.innerHTML = `<span class="negative-badge">מינוס ₪${Math.abs(balance).toLocaleString()}</span>`;
-  } else {
-    badge.innerHTML = '';
-  }
+  let bd = `<div class="brow"><span>הוצאות ילדים החודש</span><span>₪${expTotal.toLocaleString()}</span></div>`;
+  if (deficit > 0) bd += `<div class="brow neg"><span>כיסוי מינוס</span><span>₪${deficit.toLocaleString()}</span></div>`;
+  bd += `<div class="brow" style="font-weight:500;margin-top:4px;padding-top:4px;border-top:.5px solid var(--border)"><span>סה"כ להעברה</span><span>₪${ttl.toLocaleString()}</span></div>`;
+  document.getElementById('transfer-breakdown').innerHTML = bd;
 
-  let breakdown = `<div class="breakdown-row"><span>הוצאות ילדים החודש</span><span>₪${expensesTotal.toLocaleString()}</span></div>`;
-  if (deficit > 0) {
-    breakdown += `<div class="breakdown-row negative"><span>כיסוי מינוס בחשבון</span><span>₪${deficit.toLocaleString()}</span></div>`;
-  }
-  breakdown += `<div class="breakdown-row" style="font-weight:500;margin-top:4px;padding-top:4px;border-top:.5px solid var(--border)"><span>סה"כ להעברה</span><span>₪${total.toLocaleString()}</span></div>`;
-  document.getElementById('transfer-breakdown').innerHTML = breakdown;
+  renderExps();
 }
 
-function renderExpenses() {
-  const monthStr = getCurrentMonthStr();
-  const fixed = expenses.filter(e => e.type === 'fixed');
-  const oneTime = expenses.filter(e => e.type === 'one-time');
-
-  if (expenses.length === 0) {
-    document.getElementById('expenses-content').innerHTML =
-      '<div class="empty"><div class="empty-icon">📋</div>אין הוצאות עדיין<br><small>לחץ + להוספה</small></div>';
+function renderExps() {
+  const ms = monthStr();
+  const fixed = exps.filter(e => e.type === 'fixed');
+  const one = exps.filter(e => e.type === 'one-time');
+  if (!exps.length) {
+    document.getElementById('expenses-content').innerHTML = '<div class="empty"><div class="empty-icon">📋</div>אין הוצאות עדיין<br><small>לחץ + להוספה</small></div>';
     return;
   }
-
-  let html = '';
-  if (fixed.length > 0) {
-    html += '<div class="section-label">הוצאות קבועות</div>';
-    fixed.forEach(e => html += expenseCard(e, monthStr));
-  }
-  if (oneTime.length > 0) {
-    html += '<div class="section-label" style="margin-top:1.25rem">הוצאות חד-פעמיות</div>';
-    oneTime.forEach(e => html += expenseCard(e, monthStr));
-  }
-  document.getElementById('expenses-content').innerHTML = html;
+  let h = '';
+  if (fixed.length) { h += '<div class="sec">הוצאות קבועות</div>'; fixed.forEach(e => h += expCard(e, ms)); }
+  if (one.length) { h += '<div class="sec" style="margin-top:1.25rem">הוצאות חד-פעמיות</div>'; one.forEach(e => h += expCard(e, ms)); }
+  document.getElementById('expenses-content').innerHTML = h;
 }
 
-function expenseCard(e, monthStr) {
-  const active = isActiveThisMonth(e, monthStr);
-  const erezAmt = Math.round(Number(e.amount) * settings.erez_pct / 100);
-  const hilaAmt = Math.round(Number(e.amount) * settings.hila_pct / 100);
+function expCard(e, ms) {
+  const ea = Math.round(Number(e.amount) * cfg.erez_pct / 100);
+  const ha = Math.round(Number(e.amount) * cfg.hila_pct / 100);
   let meta = '';
   if (e.type === 'fixed') {
-    if (e.end_type === 'date' && e.end_month) {
-      const [y,m] = e.end_month.split('-');
-      meta = 'עד ' + MONTH_NAMES[parseInt(m)-1] + ' ' + y;
-    } else {
-      meta = 'עד ביטול';
-    }
+    meta = (e.end_type === 'date' && e.end_month) ? ('עד ' + MN[parseInt(e.end_month.split('-')[1])-1] + ' ' + e.end_month.split('-')[0]) : 'עד ביטול';
   } else {
     meta = e.expense_date ? new Date(e.expense_date + 'T00:00:00').toLocaleDateString('he-IL') : '';
   }
-  const pillClass = e.type === 'fixed' ? 'pill-fixed' : 'pill-one';
-  const pillText = e.type === 'fixed' ? 'קבועה' : 'חד-פעמית';
-  const opacity = active ? '' : 'style="opacity:.5"';
-  return `<div class="expense-card" ${opacity}>
+  const act = isActive(e, ms);
+  return `<div class="expense-card" style="${act ? '' : 'opacity:.5'}">
     <div style="flex:1">
-      <div class="exp-name">${e.description} <span class="pill-tag ${pillClass}">${pillText}</span></div>
+      <div class="exp-name">${e.description} <span class="pill-tag ${e.type==='fixed'?'pill-fixed':'pill-one'}">${e.type==='fixed'?'קבועה':'חד-פעמית'}</span></div>
       <div class="exp-meta">${meta}</div>
     </div>
     <div class="exp-right">
       <div class="exp-amount">₪${Number(e.amount).toLocaleString()}</div>
-      <div class="exp-split">ארז ₪${erezAmt.toLocaleString()} | הילה ₪${hilaAmt.toLocaleString()}</div>
-      <button class="delete-btn" onclick="deleteExpense('${e.id}')">✕</button>
+      <div class="exp-split">ארז ₪${ea.toLocaleString()} | הילה ₪${ha.toLocaleString()}</div>
+      <button class="del-btn" onclick="delExp('${e.id}')">✕</button>
     </div>
   </div>`;
 }
 
-// ---- BALANCE ----
+// BALANCE
 async function updateBalance() {
   const val = parseFloat(document.getElementById('balance-input').value) || 0;
-  const { error } = await sb.from('settings').update({ balance: val, updated_at: new Date().toISOString() }).eq('id', 1);
+  const { error } = await sb.from('settings').update({ balance: val }).eq('id', 1);
   if (error) { showToast('שגיאה'); return; }
-  settings.balance = val;
-  renderHeader();
-  renderTransferCard();
-  showToast('היתרה עודכנה ✓');
+  cfg.balance = val;
+  render();
+  showToast('יתרה עודכנה ✓');
 }
 
-// ---- EXPENSE MODAL ----
+// EXPENSE MODAL
 function openExpenseModal() {
-  const now = new Date();
-  const ms = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+  const n = new Date();
   document.getElementById('f-desc').value = '';
   document.getElementById('f-amount').value = '';
-  document.getElementById('f-start-month').value = ms;
+  document.getElementById('f-start-month').value = n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0');
   document.getElementById('f-end-month').value = '';
-  document.getElementById('f-expense-date').value = now.toISOString().split('T')[0];
-  selectType('fixed');
-  selectEnd('none');
+  document.getElementById('f-expense-date').value = n.toISOString().split('T')[0];
+  selectType('fixed'); selectEnd('none');
   document.getElementById('expense-modal').classList.add('open');
 }
 
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
 function selectType(t) {
-  expenseType = t;
-  document.getElementById('type-fixed').classList.toggle('active', t === 'fixed');
-  document.getElementById('type-one').classList.toggle('active', t === 'one-time');
-  document.getElementById('fixed-fields').style.display = t === 'fixed' ? 'block' : 'none';
-  document.getElementById('onetime-fields').style.display = t === 'one-time' ? 'block' : 'none';
+  expType = t;
+  document.getElementById('type-fixed').classList.toggle('active', t==='fixed');
+  document.getElementById('type-one').classList.toggle('active', t==='one-time');
+  document.getElementById('fixed-fields').style.display = t==='fixed'?'block':'none';
+  document.getElementById('onetime-fields').style.display = t==='one-time'?'block':'none';
 }
 
 function selectEnd(e) {
   endType = e;
-  document.getElementById('end-none').classList.toggle('active', e === 'none');
-  document.getElementById('end-date').classList.toggle('active', e === 'date');
-  document.getElementById('end-date-field').style.display = e === 'date' ? 'block' : 'none';
+  document.getElementById('end-none').classList.toggle('active', e==='none');
+  document.getElementById('end-date').classList.toggle('active', e==='date');
+  document.getElementById('end-date-field').style.display = e==='date'?'block':'none';
 }
 
 async function submitExpense() {
   const desc = document.getElementById('f-desc').value.trim();
   const amount = parseFloat(document.getElementById('f-amount').value);
   if (!desc || !amount || amount <= 0) { showToast('נא למלא תיאור וסכום'); return; }
-
-  const row = { description: desc, amount, type: expenseType, active: true, created_by: currentUser.email };
-
-  if (expenseType === 'fixed') {
+  const row = { description: desc, amount, type: expType, active: true, created_by: user.email };
+  if (expType === 'fixed') {
     const sm = document.getElementById('f-start-month').value;
     if (sm) row.start_month = sm + '-01';
     row.end_type = endType;
-    if (endType === 'date') {
-      const em = document.getElementById('f-end-month').value;
-      if (em) row.end_month = em;
-    }
+    if (endType === 'date') { const em = document.getElementById('f-end-month').value; if (em) row.end_month = em; }
   } else {
     const d = document.getElementById('f-expense-date').value;
     if (d) row.expense_date = d;
   }
-
   const { error } = await sb.from('expenses').insert(row);
-  if (error) { showToast('שגיאה בשמירה'); return; }
+  if (error) { showToast('שגיאה: ' + error.message); return; }
   closeModal('expense-modal');
-  await loadExpenses();
-  render();
+  await loadExps(); render();
   showToast('ההוצאה נוספה ✓');
 }
 
-async function deleteExpense(id) {
-  if (!confirm('למחוק הוצאה זו?')) return;
+async function delExp(id) {
+  if (!confirm('למחוק?')) return;
   await sb.from('expenses').update({ active: false }).eq('id', id);
-  await loadExpenses();
-  render();
+  await loadExps(); render();
   showToast('נמחק');
 }
 
-// ---- HISTORY ----
+// HISTORY
 async function renderHistory() {
   const { data } = await sb.from('transfers').select('*').order('month', { ascending: false }).limit(24);
-  if (!data || data.length === 0) {
-    document.getElementById('history-content').innerHTML =
-      '<div class="empty"><div class="empty-icon">📂</div>אין היסטוריה עדיין</div>';
+  if (!data?.length) {
+    document.getElementById('history-content').innerHTML = '<div class="empty"><div class="empty-icon">📂</div>אין היסטוריה עדיין</div>';
     return;
   }
-  let html = '';
+  let h = '';
   data.forEach(t => {
     const d = new Date(t.month);
-    const label = MONTH_NAMES[d.getMonth()] + ' ' + d.getFullYear();
-    const total = Number(t.erez_amount) + Number(t.hila_amount);
-    html += `<div class="history-card">
-      <div class="history-month">${label}</div>
-      <div class="history-row"><span>ארז</span><span style="color:var(--blue);font-weight:500">₪${Number(t.erez_amount).toLocaleString()}</span></div>
-      <div class="history-row"><span>הילה</span><span style="color:var(--pink);font-weight:500">₪${Number(t.hila_amount).toLocaleString()}</span></div>
-      <div class="history-row" style="border-top:.5px solid var(--border);margin-top:6px;padding-top:6px;font-weight:500"><span>סה"כ</span><span>₪${total.toLocaleString()}</span></div>
+    const lbl = MN[d.getMonth()] + ' ' + d.getFullYear();
+    const tot = Number(t.erez_amount) + Number(t.hila_amount);
+    h += `<div class="hist-card">
+      <div class="hist-month">${lbl}</div>
+      <div class="hist-row"><span>ארז</span><span style="color:var(--blue);font-weight:500">₪${Number(t.erez_amount).toLocaleString()}</span></div>
+      <div class="hist-row"><span>הילה</span><span style="color:var(--pink);font-weight:500">₪${Number(t.hila_amount).toLocaleString()}</span></div>
+      <div class="hist-row" style="border-top:.5px solid var(--border);margin-top:6px;padding-top:6px;font-weight:500"><span>סה"כ</span><span>₪${tot.toLocaleString()}</span></div>
       ${t.notes ? `<div style="font-size:13px;color:var(--text2);margin-top:6px">${t.notes}</div>` : ''}
     </div>`;
   });
-  document.getElementById('history-content').innerHTML = html;
+  document.getElementById('history-content').innerHTML = h;
 }
 
 function openTransferModal() {
-  const now = new Date();
-  const ms = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
-  document.getElementById('t-month').value = ms;
-  const { erez, hila } = calcTransfers();
+  const n = new Date();
+  document.getElementById('t-month').value = n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0');
+  const { erez, hila } = calcTransfer();
   document.getElementById('t-erez').value = erez;
   document.getElementById('t-hila').value = hila;
   document.getElementById('t-notes').value = '';
@@ -702,62 +595,51 @@ async function submitTransfer() {
   const month = document.getElementById('t-month').value;
   const erez = parseFloat(document.getElementById('t-erez').value);
   const hila = parseFloat(document.getElementById('t-hila').value);
-  if (!month || isNaN(erez) || isNaN(hila)) { showToast('נא למלא את כל השדות'); return; }
-  const { error } = await sb.from('transfers').insert({
-    month: month + '-01', erez_amount: erez, hila_amount: hila,
-    notes: document.getElementById('t-notes').value.trim() || null
-  });
+  if (!month || isNaN(erez) || isNaN(hila)) { showToast('נא למלא הכל'); return; }
+  const { error } = await sb.from('transfers').insert({ month: month+'-01', erez_amount: erez, hila_amount: hila, notes: document.getElementById('t-notes').value.trim() || null });
   if (error) { showToast('שגיאה'); return; }
   closeModal('transfer-modal');
   renderHistory();
-  showToast('ההעברה נרשמה ✓');
+  showToast('נרשם ✓');
 }
 
-// ---- SETTINGS ----
-function onSlider(val) {
-  const v = parseInt(val);
+// SETTINGS
+function onSlider(v) {
   document.getElementById('s-erez-val').textContent = v + '%';
-  document.getElementById('s-hila-val').textContent = (100-v) + '%';
+  document.getElementById('s-hila-val').textContent = (100-parseInt(v)) + '%';
 }
 
 async function saveSettings() {
-  const erez_pct = parseInt(document.getElementById('s-erez-pct').value);
-  const billing_day = parseInt(document.getElementById('s-billing').value) || 10;
-  const hila_pct = 100 - erez_pct;
-  const { error } = await sb.from('settings').update({ erez_pct, hila_pct, billing_day, updated_at: new Date().toISOString() }).eq('id', 1);
+  const ep = parseInt(document.getElementById('s-erez-pct').value);
+  const bd = parseInt(document.getElementById('s-billing').value) || 10;
+  const { error } = await sb.from('settings').update({ erez_pct: ep, hila_pct: 100-ep, billing_day: bd }).eq('id', 1);
   if (error) { showToast('שגיאה'); return; }
-  settings = { ...settings, erez_pct, hila_pct, billing_day };
+  cfg = { ...cfg, erez_pct: ep, hila_pct: 100-ep, billing_day: bd };
   render();
   showToast('נשמר ✓');
 }
 
-// ---- TABS ----
+// TABS
 function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach((t,i) => {
-    t.classList.toggle('active', ['expenses','history','settings'][i] === tab);
-  });
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['expenses','history','settings'][i]===tab));
   document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
-  document.getElementById('pane-' + tab).classList.add('active');
-  document.getElementById('fab-btn').style.display = tab === 'expenses' ? 'flex' : 'none';
+  document.getElementById('pane-'+tab).classList.add('active');
+  document.getElementById('fab-btn').style.display = tab==='expenses' ? 'flex' : 'none';
   if (tab === 'history') renderHistory();
 }
 
-// ---- UTILS ----
+// UTILS
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
+  t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
 document.querySelectorAll('.modal-overlay').forEach(el => {
-  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+  el.addEventListener('click', e => { if (e.target===el) el.classList.remove('open'); });
 });
 
-// init label
-const _now = new Date();
-const _next = new Date(_now.getFullYear(), _now.getMonth()+1, 1);
-document.getElementById('next-month-label').textContent = MONTH_NAMES[_next.getMonth()] + ' ' + _next.getFullYear();
+init();
 </script>
 </body>
 </html>
